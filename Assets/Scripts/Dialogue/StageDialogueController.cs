@@ -89,20 +89,14 @@ namespace RecipeAboutLife.Dialogue
 
         private void OnEnable()
         {
-            // ScoreManager의 스테이지 완료 이벤트 구독
-            if (Managers.ScoreManager.Instance != null)
-            {
-                Managers.ScoreManager.Instance.OnStageCompleted += OnStageCompleted;
-            }
+            // ⚠️ DEPRECATED: StageStoryController를 사용하세요.
+            // StageStoryController와 이벤트 충돌을 방지하기 위해 자동 구독을 비활성화합니다.
+            Debug.LogWarning("[StageDialogueController] DEPRECATED: StageStoryController를 사용하세요.");
         }
 
         private void OnDisable()
         {
-            // 이벤트 구독 해제
-            if (Managers.ScoreManager.Instance != null)
-            {
-                Managers.ScoreManager.Instance.OnStageCompleted -= OnStageCompleted;
-            }
+            // DEPRECATED: 자동 구독이 비활성화되어 해제할 필요 없음
         }
 
         // ==========================================

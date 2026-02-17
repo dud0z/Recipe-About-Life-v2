@@ -15,11 +15,13 @@ namespace RecipeAboutLife.Cooking
         private GameObject currentStick;
         private SimpleDraggable currentDraggable;
         private bool isActive = false;
+        private UnityEngine.Camera mainCamera;
 
         private void Start()
         {
             manager = SimpleCookingManager.Instance;
-            
+            mainCamera = UnityEngine.Camera.main;
+
             if (manager != null)
             {
                 manager.OnPhaseChanged += OnPhaseChanged;
@@ -63,7 +65,9 @@ namespace RecipeAboutLife.Cooking
             AudioManager.Instance?.PlayStickPickup();
 
             // 마우스 위치에 꼬치 생성
-            Vector3 mousePos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (mainCamera == null) mainCamera = UnityEngine.Camera.main;
+            if (mainCamera == null) return;
+            Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
 
             currentStick = Instantiate(manager.stickPrefab, mousePos, Quaternion.Euler(0, 0, 90)); // 세로로 생성

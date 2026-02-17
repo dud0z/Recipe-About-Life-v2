@@ -602,11 +602,11 @@ namespace RecipeAboutLife.Managers
             OnNPCRewarded?.Invoke(currentNPCIndex + 1, reward);
             OnTotalRewardChanged?.Invoke(totalReward);
 
+            // NPC에게 음식 서빙 완료 알림 (ServedSuccess 대화 트리거)
+            NotifyNPCFoodServed(true);
+
             // 다음 NPC로
             currentNPCIndex++;
-
-            // 레시피 완료 이벤트 발생 (다음 NPC 스폰 트리거)
-            GameEvents.TriggerRecipeCompleted(perfectRecipe);
 
             // 모든 NPC 완료 확인
             if (currentNPCIndex >= maxNPCCount)

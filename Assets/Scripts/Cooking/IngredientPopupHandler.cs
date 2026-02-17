@@ -29,11 +29,13 @@ namespace RecipeAboutLife.Cooking
         private int ingredientCount = 0;
         private GameObject currentDragging;
         private string currentIngredientType;
+        private UnityEngine.Camera mainCamera;
 
         private void Start()
         {
             manager = SimpleCookingManager.Instance;
-            
+            mainCamera = UnityEngine.Camera.main;
+
             // 재료 소스 이벤트 연결
             if (sausageSource != null)
             {
@@ -92,7 +94,9 @@ namespace RecipeAboutLife.Cooking
             }
 
             // 마우스 위치에 재료 생성
-            Vector3 mousePos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (mainCamera == null) mainCamera = UnityEngine.Camera.main;
+            if (mainCamera == null) return;
+            Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
 
             currentDragging = Instantiate(prefab, mousePos, Quaternion.identity, transform);

@@ -151,12 +151,14 @@ namespace RecipeAboutLife.NPC
                     }
                     else
                     {
-                        Debug.LogWarning("[NPCOrderController] Order 대화가 없습니다!");
+                        Debug.LogWarning("[NPCOrderController] Order 대화가 없습니다! 바로 요리 시스템 시작");
+                        StartCookingSystem();
                     }
                 }
                 else
                 {
-                    Debug.LogWarning("[NPCOrderController] DialogueController가 없습니다!");
+                    Debug.LogWarning("[NPCOrderController] DialogueController가 없습니다! 바로 요리 시스템 시작");
+                    StartCookingSystem();
                 }
 
                 // 주문 UI는 표시하지 않음 (대화문에 이미 주문 내용 포함)
