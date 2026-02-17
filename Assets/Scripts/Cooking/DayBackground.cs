@@ -53,18 +53,35 @@ namespace RecipeAboutLife.Cooking
 
         /// <summary>
         /// Day 변경 시 스프라이트 교체
+        /// StageDataManager에서 먼저 시도, 없으면 기존 하드코딩 방식으로 폴백
         /// </summary>
         private void OnDayChanged(int day)
         {
             if (spriteRenderer == null) return;
 
-            Sprite newSprite = day switch
+            Sprite newSprite = null;
+
+            // StageDataManager에서 먼저 시도
+            if (Data.StageDataManager.Instance != null)
             {
-                1 => day1Sprite,
-                2 => day2Sprite,
-                3 => day3Sprite,
-                _ => day1Sprite
-            };
+                var stageData = Data.StageDataManager.Instance.GetStageData(day);
+                if (stageData != null)
+                {
+                    newSprite = stageData.backgroundSprite;
+                }
+            }
+
+            // 폴백: 기존 하드코딩 방식
+            if (newSprite == null)
+            {
+                newSprite = day switch
+                {
+                    1 => day1Sprite,
+                    2 => day2Sprite,
+                    3 => day3Sprite,
+                    _ => day1Sprite
+                };
+            }
 
             if (newSprite != null)
             {

@@ -116,8 +116,8 @@ namespace RecipeAboutLife.Cooking
             // 팝업 열릴 때 초기화
             InitializePopup();
 
-            // 메인 UI 숨김 (다음 프레임에서 확실히 처리)
-            Invoke(nameof(HideMainUIImmediate), 0f);
+            // 메인 UI 숨김
+            HideMainUIImmediate();
 
             // 메인 Canvas의 닫기 버튼 표시
             if (mainCanvasCloseButton != null)

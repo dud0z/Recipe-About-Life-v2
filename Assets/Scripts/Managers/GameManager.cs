@@ -110,9 +110,21 @@ public class GameManager : MonoBehaviour
 
     /// <summary>
     /// 현재 Day 목표 금액 반환
+    /// StageDataManager에서 먼저 시도, 없으면 기존 배열 방식으로 폴백
     /// </summary>
     public int GetCurrentDayGoal()
     {
+        // StageDataManager에서 먼저 시도
+        if (RecipeAboutLife.Data.StageDataManager.Instance != null)
+        {
+            var stageData = RecipeAboutLife.Data.StageDataManager.Instance.GetStageData(currentDay);
+            if (stageData != null)
+            {
+                return stageData.goalAmount;
+            }
+        }
+
+        // 폴백: 기존 배열 방식
         int index = Mathf.Clamp(currentDay - 1, 0, dayGoals.Length - 1);
         return dayGoals[index];
     }

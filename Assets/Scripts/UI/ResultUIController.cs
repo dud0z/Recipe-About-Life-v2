@@ -110,15 +110,27 @@ namespace RecipeAboutLife.UI
         {
             isSuccess = success;
 
-            // ScoreManager에서 데이터 가져오기
-            if (ScoreManager.Instance == null)
+            // GameManager를 우선 데이터 소스로 사용 (ScoreManager는 폴백)
+            int totalReward = 0;
+            int targetReward = 0;
+
+            if (GameManager.Instance != null)
             {
-                Debug.LogError("[ResultUIController] ScoreManager를 찾을 수 없습니다!");
+                totalReward = GameManager.Instance.TodayEarnings;
+                targetReward = GameManager.Instance.GetCurrentDayGoal();
+                Debug.Log($"[ResultUIController] GameManager에서 데이터 로드: {totalReward}/{targetReward}");
+            }
+            else if (ScoreManager.Instance != null)
+            {
+                totalReward = ScoreManager.Instance.GetTotalReward();
+                targetReward = ScoreManager.Instance.GetTargetReward();
+                Debug.Log($"[ResultUIController] ScoreManager에서 데이터 로드 (폴백): {totalReward}/{targetReward}");
+            }
+            else
+            {
+                Debug.LogError("[ResultUIController] GameManager와 ScoreManager를 모두 찾을 수 없습니다!");
                 return;
             }
-
-            int totalReward = ScoreManager.Instance.GetTotalReward();
-            int targetReward = ScoreManager.Instance.GetTargetReward();
 
             // UI 업데이트
             if (totalRewardText != null)

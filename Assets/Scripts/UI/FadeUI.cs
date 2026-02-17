@@ -55,6 +55,7 @@ namespace RecipeAboutLife.UI
         // ==========================================
 
         private Coroutine currentFadeCoroutine;
+        private CanvasGroup fadePanelCanvasGroup;
 
         // ==========================================
         // Lifecycle
@@ -93,10 +94,26 @@ namespace RecipeAboutLife.UI
                 centerImage.gameObject.SetActive(false);
             }
 
+            // FadeUI Canvas가 항상 최상위에 표시되도록 sortingOrder 설정
+            Canvas canvas = GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.sortingOrder = 999;
+                Debug.Log($"[FadeUI] Canvas sortingOrder를 {canvas.sortingOrder}로 설정");
+            }
+
             // 패널은 활성화 상태로 유지 (알파값으로 제어)
             if (fadePanel != null)
             {
                 fadePanel.SetActive(true);
+
+                // CanvasGroup으로 raycast 차단 일괄 제어
+                fadePanelCanvasGroup = fadePanel.GetComponent<CanvasGroup>();
+                if (fadePanelCanvasGroup == null)
+                {
+                    fadePanelCanvasGroup = fadePanel.AddComponent<CanvasGroup>();
+                }
+                fadePanelCanvasGroup.blocksRaycasts = false;
             }
         }
 
@@ -115,6 +132,9 @@ namespace RecipeAboutLife.UI
             {
                 StopCoroutine(currentFadeCoroutine);
             }
+
+            // 페이드 시작 시 클릭 차단 활성화
+            if (fadePanelCanvasGroup != null) fadePanelCanvasGroup.blocksRaycasts = true;
 
             float targetDuration = duration > 0 ? duration : 1f;
             currentFadeCoroutine = StartCoroutine(FadeCoroutine(0f, 1f, targetDuration, onComplete));
@@ -234,6 +254,7 @@ namespace RecipeAboutLife.UI
                 Color color = fadeImage.color;
                 color.a = 1f;
                 fadeImage.color = color;
+                if (fadePanelCanvasGroup != null) fadePanelCanvasGroup.blocksRaycasts = true;
             }
         }
 
@@ -247,6 +268,7 @@ namespace RecipeAboutLife.UI
                 Color color = fadeImage.color;
                 color.a = 0f;
                 fadeImage.color = color;
+                if (fadePanelCanvasGroup != null) fadePanelCanvasGroup.blocksRaycasts = false;
             }
         }
 
@@ -288,6 +310,12 @@ namespace RecipeAboutLife.UI
             // 최종 알파값 설정
             color.a = endAlpha;
             fadeImage.color = color;
+
+            // 투명해지면 클릭 차단 해제 (페이드 아웃 완료 시)
+            if (endAlpha <= 0f)
+            {
+                if (fadePanelCanvasGroup != null) fadePanelCanvasGroup.blocksRaycasts = false;
+            }
 
             currentFadeCoroutine = null;
 

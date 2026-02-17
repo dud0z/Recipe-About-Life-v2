@@ -109,6 +109,8 @@ namespace RecipeAboutLife.Lobby
         public void FadeToBlack(float duration)
         {
             if (spriteRenderer == null) return;
+            // sortingOrder를 낮춰서 FadeUI 캔버스 아래에 표시되도록 보장
+            spriteRenderer.sortingOrder = -100;
             StartCoroutine(FadeColorCoroutine(spriteRenderer.color, Color.black, duration));
         }
 
@@ -118,6 +120,8 @@ namespace RecipeAboutLife.Lobby
         public void FadeToNormal(float duration)
         {
             if (spriteRenderer == null) return;
+            // sortingOrder를 원래 값으로 복구
+            spriteRenderer.sortingOrder = 0;
             Color targetColor = isUnlocked ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
             StartCoroutine(FadeColorCoroutine(spriteRenderer.color, targetColor, duration));
         }

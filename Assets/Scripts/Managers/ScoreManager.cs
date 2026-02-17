@@ -130,6 +130,13 @@ namespace RecipeAboutLife.Managers
             {
                 Debug.LogWarning("[ScoreManager] SimpleCookingManager.Instance를 찾을 수 없습니다!");
             }
+
+            // GameManager의 dayGoals와 목표 금액 동기화
+            if (GameManager.Instance != null)
+            {
+                targetTotalReward = GameManager.Instance.GetCurrentDayGoal();
+                Debug.Log($"[ScoreManager] 목표 금액을 GameManager에서 동기화: {targetTotalReward}");
+            }
         }
 
         private void OnEnable()

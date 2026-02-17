@@ -36,6 +36,20 @@ namespace RecipeAboutLife.Lobby
 
         private void Start()
         {
+            // GameManager의 currentDay에 따라 핀 활성/비활성화
+            if (GameManager.Instance != null)
+            {
+                int currentDay = GameManager.Instance.CurrentDay;
+                for (int i = 0; i < stagePins.Count; i++)
+                {
+                    if (stagePins[i] != null)
+                    {
+                        stagePins[i].SetUnlocked(i + 1 <= currentDay);
+                    }
+                }
+                Debug.Log($"[Lobby] 핀 활성화 갱신 - 현재 Day: {currentDay}");
+            }
+
             // 씬 시작 시 페이드 아웃 (화면 밝아짐)
             StartCoroutine(FadeOutOnStart());
         }
@@ -118,12 +132,12 @@ namespace RecipeAboutLife.Lobby
                 Debug.LogWarning("[Lobby] FadeUI가 없습니다!");
             }
 
-            // 핀들도 같이 검은색으로 페이드 (동시에)
+            // 핀들을 FadeUI보다 빠르게 검은색으로 페이드 (핀이 페이드 효과 위에 보이는 문제 방지)
             foreach (var pin in stagePins)
             {
                 if (pin != null)
                 {
-                    pin.FadeToBlack(transitionDuration);
+                    pin.FadeToBlack(transitionDuration * 0.5f);
                 }
             }
             Debug.Log($"[Lobby] → 핀 페이드 (시간: {transitionDuration}초)");

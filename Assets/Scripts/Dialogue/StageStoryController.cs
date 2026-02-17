@@ -183,6 +183,12 @@ namespace RecipeAboutLife.Dialogue
         /// <param name="success">재화 목표 달성 여부</param>
         private void OnStageCompleted(bool success)
         {
+            // GameManager의 데이터를 기준으로 성공 여부 재판정 (ScoreManager와 데이터 불일치 방지)
+            if (GameManager.Instance != null)
+            {
+                success = GameManager.Instance.IsDayGoalAchieved();
+            }
+
             Debug.Log($"[StageStoryController] 스테이지 완료! 성공: {success}, Stage ID: {currentStageID}");
 
             // 페이드 인 후 결산 UI 표시
@@ -241,12 +247,30 @@ namespace RecipeAboutLife.Dialogue
                 resultUI.OnConfirmClicked -= OnResultUIConfirmed;
             }
 
-            // 실패 시 바로 로비로 이동
+            // 실패 시: Day 재시작 + 로비 이동
             if (!success)
             {
-                Debug.Log("[StageStoryController] 목표 미달성! 바로 로비로 이동");
+                Debug.Log("[StageStoryController] 목표 미달성! Day 재시작 후 로비로 이동");
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.RestartDay();
+                }
                 StartCoroutine(TransitionToLobbyOnFail());
                 return;
+            }
+
+            // 성공 시: 다음 Day로 진행
+            if (GameManager.Instance != null)
+            {
+                if (GameManager.Instance.CurrentDay < GameManager.Instance.maxDay)
+                {
+                    GameManager.Instance.StartNextDay();
+                    Debug.Log($"[StageStoryController] 다음 Day로 진행: Day {GameManager.Instance.CurrentDay}");
+                }
+                else
+                {
+                    Debug.Log("[StageStoryController] 모든 Day 완료! 게임 클리어!");
+                }
             }
 
             // 성공 시 검은 화면 유지한 채로 GuideText → 페이드 아웃 → 스토리 대화 시작
@@ -801,9 +825,22 @@ namespace RecipeAboutLife.Dialogue
                     Debug.Log("[StageStoryController] FramePanel 숨김");
                 }
 
-                // 2. "로비로" 텍스트 표시
-                Debug.Log("[StageStoryController] 2. '로비로' 텍스트 표시");
-                fadeUI.ShowText("로비로");
+                // 2. Day 정보 또는 "로비로" 텍스트 표시
+                string transitionText = "로비로";
+                if (GameManager.Instance != null)
+                {
+                    int nextDay = GameManager.Instance.CurrentDay;
+                    if (nextDay <= GameManager.Instance.maxDay)
+                    {
+                        transitionText = $"Day {nextDay}";
+                    }
+                    else
+                    {
+                        transitionText = "클리어!";
+                    }
+                }
+                Debug.Log($"[StageStoryController] 2. '{transitionText}' 텍스트 표시");
+                fadeUI.ShowText(transitionText);
 
                 // 3. 3초 대기 (클릭 대기 대신)
                 Debug.Log("[StageStoryController] 3. 3초 대기 중...");
