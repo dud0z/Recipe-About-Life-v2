@@ -250,7 +250,7 @@ public class GameUIManager : MonoBehaviour
     /// <summary>
     /// 핫도그 제공 시 호출 (이벤트)
     /// </summary>
-    private void OnHotdogServed()
+    private void OnHotdogServed(int earnedMoney)
     {
         Debug.Log("[GameUIManager] 핫도그 제공 - MoneyPanel 표시");
         ShowMoneyPanel();

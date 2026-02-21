@@ -74,6 +74,12 @@ namespace RecipeAboutLife.Managers
         [SerializeField]
         private bool isOrderServed = false;
 
+        /// <summary>
+        /// SimpleCookingManager에서 전달받은 ScoreCalculator 기반 점수
+        /// OnRecipeCompleted에서 사용 (HotdogRecipe.CalculateReward 대신)
+        /// </summary>
+        private int lastCalculatedScore = 0;
+
         // ==========================================
         // Events
         // ==========================================
@@ -123,7 +129,7 @@ namespace RecipeAboutLife.Managers
             // SimpleCookingManager 이벤트 구독 (Awake에서는 Instance가 없을 수 있음)
             if (SimpleCookingManager.Instance != null)
             {
-                SimpleCookingManager.Instance.OnHotdogServed += OnHotdogServed;
+                SimpleCookingManager.Instance.OnHotdogServed += OnHotdogServedHandler;
                 Debug.Log("[ScoreManager] SimpleCookingManager.OnHotdogServed 구독 완료");
             }
             else
@@ -152,7 +158,7 @@ namespace RecipeAboutLife.Managers
 
             if (SimpleCookingManager.Instance != null)
             {
-                SimpleCookingManager.Instance.OnHotdogServed -= OnHotdogServed;
+                SimpleCookingManager.Instance.OnHotdogServed -= OnHotdogServedHandler;
             }
         }
 
@@ -217,7 +223,8 @@ namespace RecipeAboutLife.Managers
         /// 핫도그 서빙 이벤트 처리
         /// SimpleCookingManager.OnHotdogServed 이벤트 발생 시 호출됨
         /// </summary>
-        private void OnHotdogServed()
+        /// <param name="earnedMoney">SimpleCookingManager가 ScoreCalculator로 계산한 획득 금액</param>
+        private void OnHotdogServedHandler(int earnedMoney)
         {
             // 중복 서빙 방지
             if (isOrderServed)
@@ -251,16 +258,20 @@ namespace RecipeAboutLife.Managers
             // HotdogData → HotdogRecipe 변환 + 검증
             HotdogRecipe recipe = CreateRecipeFromHotdog(hotdog);
 
+            // SimpleCookingManager가 ScoreCalculator로 계산한 점수 저장
+            lastCalculatedScore = earnedMoney;
+
             // 서빙 완료 표시
             isOrderServed = true;
 
             // GameEvents.OnRecipeCompleted 발생
-            // → OnRecipeCompleted()가 호출되어 보상 계산 진행
+            // → OnRecipeCompleted()가 호출되어 보상 처리 진행
             GameEvents.TriggerRecipeCompleted(recipe);
 
             Debug.Log($"[ScoreManager] Recipe created and event triggered!\n" +
                      $"  Quality: {recipe.quality:F1}/100\n" +
-                     $"  Matches Order: {recipe.matchesOrder}");
+                     $"  Matches Order: {recipe.matchesOrder}\n" +
+                     $"  ScoreCalculator 점수: {earnedMoney}원");
         }
 
         /// <summary>
@@ -381,8 +392,9 @@ namespace RecipeAboutLife.Managers
                 return;
             }
 
-            // 보상 계산 (RecipeConfigSO 없이 직접 계산)
-            int reward = recipe.CalculateReward(null);
+            // ScoreCalculator 기반 점수 사용 (SimpleCookingManager에서 전달받은 값)
+            // HotdogRecipe.CalculateReward()는 별도 공식이므로 사용하지 않음
+            int reward = lastCalculatedScore;
 
             // NPC 보상 데이터 저장
             NPCRewardData npcData = npcRewards[currentNPCIndex];

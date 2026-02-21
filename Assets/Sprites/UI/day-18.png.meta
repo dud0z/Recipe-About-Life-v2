@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 3b16ebbb84f88614dbf05638a7a4452e
+guid: 4366f2e0398f46345a800b2e87d5a61d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4623349018025994628
-    second: DAY1_0
+      213: -1010108381727442782
+    second: day-18_0
   - first:
-      213: -3370145874809452399
-    second: DAY1_1
+      213: 672971455079149137
+    second: day-18_1
   - first:
-      213: -3041951956722063185
-    second: DAY1_2
+      213: 8523802664961724253
+    second: day-18_2
   - first:
-      213: -4819520146768194911
-    second: DAY1_3
+      213: -2767960138530109049
+    second: day-18_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -122,7 +122,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DAY1_0
+      name: day-18_0
       rect:
         serializedVersion: 2
         x: 70
@@ -130,21 +130,21 @@ TextureImporter:
         width: 468
         height: 533
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c76d8eb409096dfb0800000000000000
-      internalID: -4623349018025994628
+      spriteID: 2a8bd7257cf5bf1f0800000000000000
+      internalID: -1010108381727442782
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DAY1_1
+      name: day-18_1
       rect:
         serializedVersion: 2
         x: 551
@@ -152,21 +152,21 @@ TextureImporter:
         width: 545
         height: 533
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1980cb2ce26da31d0800000000000000
-      internalID: -3370145874809452399
+      spriteID: 15e68fb09ffd65900800000000000000
+      internalID: 672971455079149137
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DAY1_2
+      name: day-18_2
       rect:
         serializedVersion: 2
         x: 1068
@@ -174,103 +174,37 @@ TextureImporter:
         width: 531
         height: 533
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fa8e6c3ffc0d8c5d0800000000000000
-      internalID: -3041951956722063185
+      spriteID: d5f429cdc51aa4670800000000000000
+      internalID: 8523802664961724253
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DAY1_3
+      name: day-18_3
       rect:
         serializedVersion: 2
-        x: 1916
+        x: 1870
         y: 106
-        width: 263
-        height: 534
+        width: 416
+        height: 540
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1a21b0026ff9d1db0800000000000000
-      internalID: -4819520146768194911
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DAY1_4
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2254
-        height: 741
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b1f2cd3feda14c4499e210fe3ba84228
-      internalID: 611751607
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DAY1_5
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2254
-        height: 741
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b26393f67a838824998ddf7f3790c761
-      internalID: -1974957874
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DAY1_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2254
-        height: 741
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c88f33b571c58ef4eaee2285db0428e3
-      internalID: -532751088
+      spriteID: 789c8765bea3699d0800000000000000
+      internalID: -2767960138530109049
       vertices: []
       indices: 
       edges: []
@@ -279,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 87c3c64fd19a76a4080d4c13ed08470c
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -289,13 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      DAY1_0: -4623349018025994628
-      DAY1_1: -3370145874809452399
-      DAY1_2: -3041951956722063185
-      DAY1_3: -4819520146768194911
-      DAY1_4: 611751607
-      DAY1_5: -1974957874
-      DAY1_6: -532751088
+      day-18_0: -1010108381727442782
+      day-18_1: 672971455079149137
+      day-18_2: 8523802664961724253
+      day-18_3: -2767960138530109049
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -91,14 +91,17 @@ namespace RecipeAboutLife.Cooking
         }
 
         /// <summary>
-        /// 보상 계산 (RecipeConfigSO 없이 동작)
+        /// [Deprecated] 보상 계산 - ScoreCalculator를 사용하세요
+        /// ScoreCalculator.Calculate()가 공식 점수 계산 시스템입니다.
+        /// 이 메서드는 구 시스템 호환용으로만 유지됩니다.
         /// </summary>
         /// <param name="config">사용 안 함 (호환성 유지용)</param>
         /// <returns>보상 코인</returns>
+        [System.Obsolete("ScoreCalculator.Calculate()를 사용하세요. 이 메서드는 별도 공식으로 계산하여 ScoreCalculator와 결과가 다릅니다.")]
         public int CalculateReward(RecipeConfigSO config)
         {
-            // 기본 보상: 2000원 (테스트용 - 목표 4000원일 때 2개만 팔면 됨)
-            int baseReward = 4000;
+            // 기본 보상: 2000원
+            int baseReward = 2000;
 
             // 품질 배수: 0.0 ~ 1.0
             float qualityMultiplier = quality / 100f;

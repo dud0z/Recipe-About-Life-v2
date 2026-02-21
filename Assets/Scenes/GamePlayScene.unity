@@ -443,7 +443,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -20
-  m_Sprite: {fileID: 2058935420505126140, guid: 2de4b5068efae904ebc410bdf48bbdf4, type: 3}
+  m_Sprite: {fileID: 8286727131347998951, guid: 252b95a73ac7ee845b4ae3b3f20be358, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -481,7 +481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b769f38395c524685abb3f57bc0b3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day1Sprite: {fileID: 2058935420505126140, guid: 2de4b5068efae904ebc410bdf48bbdf4, type: 3}
+  day1Sprite: {fileID: 8286727131347998951, guid: 252b95a73ac7ee845b4ae3b3f20be358, type: 3}
   day2Sprite: {fileID: 3241480774077484461, guid: c3486b5794a0d9a48a02ab3898adbe95, type: 3}
   day3Sprite: {fileID: 2058935420505126140, guid: 2de4b5068efae904ebc410bdf48bbdf4, type: 3}
 --- !u!1 &76582031
@@ -1753,7 +1753,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: -1485841023630661909, guid: d66676c4717f78a429fcf5bc2742673e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 369fd5f39090a254e9dcdf5c697ae104, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1791,7 +1791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b769f38395c524685abb3f57bc0b3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day1Sprite: {fileID: -1485841023630661909, guid: d66676c4717f78a429fcf5bc2742673e, type: 3}
+  day1Sprite: {fileID: 21300000, guid: 369fd5f39090a254e9dcdf5c697ae104, type: 3}
   day2Sprite: {fileID: 7153873382599412237, guid: 12c18e89f0946ba46be079e596eda43f, type: 3}
   day3Sprite: {fileID: 6354193766761040823, guid: e2f23a2261d521d4d8c2489f443d37c3, type: 3}
 --- !u!1 &450838706
@@ -2029,7 +2029,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -454031554985337817, guid: e3a07a32262f66a4da7ddad9cf069c67, type: 3}
+  m_Sprite: {fileID: 2630216506923216271, guid: ada572ccaeded9440bdac5c065ab6291, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2867,6 +2867,7 @@ GameObject:
   m_Component:
   - component: {fileID: 690779221}
   - component: {fileID: 690779222}
+  - component: {fileID: 690779223}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2909,6 +2910,18 @@ MonoBehaviour:
   todayEarnings: 0
   customersServed: 0
   isPaused: 0
+--- !u!114 &690779223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690779220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a2cff7adf8d1b49a1ab474c674a58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &691430888
 GameObject:
   m_ObjectHideFlags: 0
@@ -3971,7 +3984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca6d7a31677b8f94db62a18fd59cd2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTotalReward: 8000
+  targetTotalReward: 6000
   maxNPCCount: 5
   totalReward: 0
   currentNPCIndex: 0
@@ -7410,7 +7423,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 76fda285438523048b6e47c5eebf22f4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3b16ebbb84f88614dbf05638a7a4452e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8709,7 +8722,7 @@ MonoBehaviour:
   stageDialogueDataList:
   - {fileID: 11400000, guid: f3e4f9a7861cd694cbd3e8c5b379ea60, type: 2}
   - {fileID: 11400000, guid: 8f1b81aac7d66924289a954e97a7b842, type: 2}
-  currentStageID: 3
+  currentStageID: 1
   delayBeforeStoryDialogue: 1
   isStoryDialogueTriggered: 0
   lineDisplayTime: 3
@@ -9164,11 +9177,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dayImage: {fileID: 501192027}
-  day1Sprite: {fileID: 4622688200782238888, guid: 00ea66ba72de4f64f9a3af71541e387a, type: 3}
+  day1Sprite: {fileID: 2630216506923216271, guid: ada572ccaeded9440bdac5c065ab6291, type: 3}
   day2Sprite: {fileID: -454031554985337817, guid: e3a07a32262f66a4da7ddad9cf069c67, type: 3}
   day3Sprite: {fileID: 4622688200782238888, guid: 00ea66ba72de4f64f9a3af71541e387a, type: 3}
   backgroundRenderer: {fileID: 388946055}
-  day1Background: {fileID: -1485841023630661909, guid: d66676c4717f78a429fcf5bc2742673e, type: 3}
+  day1Background: {fileID: 21300000, guid: 369fd5f39090a254e9dcdf5c697ae104, type: 3}
   day2Background: {fileID: 7153873382599412237, guid: 12c18e89f0946ba46be079e596eda43f, type: 3}
   day3Background: {fileID: 6354193766761040823, guid: e2f23a2261d521d4d8c2489f443d37c3, type: 3}
   moneyPanel: {fileID: 2085814502}

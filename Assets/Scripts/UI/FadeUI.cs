@@ -106,6 +106,7 @@ namespace RecipeAboutLife.UI
             if (fadePanel != null)
             {
                 fadePanel.SetActive(true);
+                fadePanel.transform.SetAsLastSibling();
 
                 // CanvasGroup으로 raycast 차단 일괄 제어
                 fadePanelCanvasGroup = fadePanel.GetComponent<CanvasGroup>();
@@ -270,6 +271,16 @@ namespace RecipeAboutLife.UI
                 fadeImage.color = color;
                 if (fadePanelCanvasGroup != null) fadePanelCanvasGroup.blocksRaycasts = false;
             }
+        }
+
+        /// <summary>
+        /// FadePanel의 raycast 차단 설정
+        /// 결산 UI 등 FadePanel 위에 표시되는 UI의 클릭을 허용하기 위해 사용
+        /// </summary>
+        public void SetBlocksRaycasts(bool block)
+        {
+            if (fadePanelCanvasGroup != null)
+                fadePanelCanvasGroup.blocksRaycasts = block;
         }
 
         /// <summary>

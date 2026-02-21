@@ -23,6 +23,7 @@ namespace RecipeAboutLife.Lobby
         [SerializeField] private float floatSpeed = 2f;
 
         private SpriteRenderer spriteRenderer;
+        private CanvasGroup canvasGroup;
         private Vector3 startPosition;
 
         public int StageIndex => stageIndex;
@@ -32,6 +33,9 @@ namespace RecipeAboutLife.Lobby
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
             startPosition = transform.position;
         }
 
@@ -104,41 +108,44 @@ namespace RecipeAboutLife.Lobby
         }
 
         /// <summary>
-        /// 페이드 인 (검은색으로 변경)
+        /// 페이드 인 (투명하게 변경)
         /// </summary>
         public void FadeToBlack(float duration)
         {
-            if (spriteRenderer == null) return;
-            // sortingOrder를 낮춰서 FadeUI 캔버스 아래에 표시되도록 보장
-            spriteRenderer.sortingOrder = -100;
-            StartCoroutine(FadeColorCoroutine(spriteRenderer.color, Color.black, duration));
+            if (canvasGroup == null) return;
+            StopAllCoroutines();
+            StartCoroutine(FloatAnimation());
+            StartCoroutine(FadeAlphaCoroutine(canvasGroup.alpha, 0f, duration));
         }
 
         /// <summary>
-        /// 페이드 아웃 (원래 색으로 복귀)
+        /// 페이드 아웃 (원래 상태로 복귀)
         /// </summary>
         public void FadeToNormal(float duration)
         {
-            if (spriteRenderer == null) return;
-            // sortingOrder를 원래 값으로 복구
-            spriteRenderer.sortingOrder = 0;
-            Color targetColor = isUnlocked ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
-            StartCoroutine(FadeColorCoroutine(spriteRenderer.color, targetColor, duration));
+            if (canvasGroup == null) return;
+            StopAllCoroutines();
+            StartCoroutine(FloatAnimation());
+            StartCoroutine(FadeAlphaCoroutine(canvasGroup.alpha, 1f, duration));
         }
 
-        private IEnumerator FadeColorCoroutine(Color from, Color to, float duration)
+        private IEnumerator FadeAlphaCoroutine(float from, float to, float duration)
         {
-            float elapsedTime = 0f;
+            if (duration <= 0f)
+            {
+                canvasGroup.alpha = to;
+                yield break;
+            }
 
+            float elapsedTime = 0f;
             while (elapsedTime < duration)
             {
                 elapsedTime += Time.deltaTime;
                 float t = elapsedTime / duration;
-                spriteRenderer.color = Color.Lerp(from, to, t);
+                canvasGroup.alpha = Mathf.Lerp(from, to, t);
                 yield return null;
             }
-
-            spriteRenderer.color = to;
+            canvasGroup.alpha = to;
         }
 
         private IEnumerator FloatAnimation()

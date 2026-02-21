@@ -696,7 +696,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &655301873
 RectTransform:
   m_ObjectHideFlags: 0
@@ -726,9 +726,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea4610651b7987442952fd3ccfe1250b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stageIndex: 1
+  m_Name:
+  m_EditorClassIdentifier:
+  stageIndex: 3
   isUnlocked: 0
   unlockedSprite: {fileID: -6964565648693895049, guid: e58fb9086fd3a924e9c62042b760ef9d, type: 3}
   lockedSprite: {fileID: -2998188562288457463, guid: 24cf643fd3671624f91bd0c7f45eaf82, type: 3}
@@ -1144,7 +1144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1460868758
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1174,9 +1174,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea4610651b7987442952fd3ccfe1250b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stageIndex: 1
+  m_Name:
+  m_EditorClassIdentifier:
+  stageIndex: 2
   isUnlocked: 0
   unlockedSprite: {fileID: 3032400113675930684, guid: 4504b0901ec00464d8db85ac96fe3ca1, type: 3}
   lockedSprite: {fileID: -6671937398152496547, guid: 16b9c3eef318b79448817ab0e6524450, type: 3}

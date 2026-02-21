@@ -2,6 +2,7 @@ using UnityEngine;
 using RecipeAboutLife.Orders;
 using RecipeAboutLife.Events;
 using RecipeAboutLife.Managers;
+using CookingOrderData = RecipeAboutLife.Cooking.OrderData;
 
 namespace RecipeAboutLife.NPC
 {
@@ -167,7 +168,22 @@ namespace RecipeAboutLife.NPC
                 // 주문을 요리 시스템으로 전달
                 SendOrderToCookingSystem();
 
-                Debug.Log($"[NPCOrderController] DialogueSet에서 주문 받음: {currentOrder.OrderName}");
+                // 주문 상세 로그
+                string fill1 = currentOrder.FillingSlot1 == FillingType.HalfSausage ? "Sausage" : "Cheese";
+                string fill2 = currentOrder.FillingSlot2 == FillingType.HalfSausage ? "Sausage" : "Cheese";
+                string sauces = "";
+                foreach (var req in currentOrder.SauceRequirements)
+                {
+                    string name = req.SauceType == SauceType.Ketchup ? "케첩" : "머스타드";
+                    sauces += $"{name}({req.MinAmount}) ";
+                }
+                if (string.IsNullOrEmpty(sauces)) sauces = "없음";
+
+                Debug.Log($"[NPCOrderController] ===== NPC 주문 접수 =====");
+                Debug.Log($"  주문명: {currentOrder.OrderName}");
+                Debug.Log($"  재료: {fill1} + {fill2}");
+                Debug.Log($"  설탕: {(currentOrder.NeedSugar ? "O" : "X")}");
+                Debug.Log($"  소스: {sauces.Trim()}");
             }
             else
             {
@@ -198,6 +214,36 @@ namespace RecipeAboutLife.NPC
             {
                 Debug.LogError("[NPCOrderController] ScoreManager not found!");
             }
+
+            // GameManager에도 주문 전달 (ScoreCalculator 연동)
+            if (GameManager.Instance != null)
+            {
+                var cookingOrder = ConvertToCookingOrder(currentOrder);
+                GameManager.Instance.SetCurrentOrder(cookingOrder);
+                Debug.Log($"[NPCOrderController] Order sent to GameManager: {cookingOrder}");
+            }
+        }
+
+        /// <summary>
+        /// Orders.OrderData → Cooking.OrderData 변환
+        /// </summary>
+        private CookingOrderData ConvertToCookingOrder(OrderData order)
+        {
+            bool wantsKetchup = false;
+            bool wantsMustard = false;
+            foreach (var req in order.SauceRequirements)
+            {
+                if (req.SauceType == SauceType.Ketchup) wantsKetchup = true;
+                if (req.SauceType == SauceType.Mustard) wantsMustard = true;
+            }
+
+            return new CookingOrderData(
+                fill1: order.FillingSlot1 == FillingType.HalfSausage ? "Sausage" : "Cheese",
+                fill2: order.FillingSlot2 == FillingType.HalfSausage ? "Sausage" : "Cheese",
+                sugar: order.NeedSugar,
+                ketchup: wantsKetchup,
+                mustard: wantsMustard
+            );
         }
 
         /// <summary>
@@ -238,6 +284,10 @@ namespace RecipeAboutLife.NPC
             currentOrder = null;
             hasOrder = false;
             isWaitingForFood = false;
+
+            // GameManager 주문도 정리
+            if (GameManager.Instance != null)
+                GameManager.Instance.ClearCurrentOrder();
 
             if (dialogueBubbleUI != null)
             {

@@ -219,6 +219,10 @@ namespace RecipeAboutLife.Dialogue
                 // 결산 페이지 표시
                 resultUI.Show(success);
 
+                // FadePanel의 raycast 차단 해제 (결산 버튼 클릭 가능하도록)
+                if (UI.FadeUI.Instance != null)
+                    UI.FadeUI.Instance.SetBlocksRaycasts(false);
+
                 // 확인 버튼 클릭 이벤트 구독
                 resultUI.OnConfirmClicked += OnResultUIConfirmed;
 
@@ -239,6 +243,10 @@ namespace RecipeAboutLife.Dialogue
         private void OnResultUIConfirmed(bool success)
         {
             Debug.Log($"[StageStoryController] 결산 UI 확인 버튼 클릭 - 성공: {success}");
+
+            // FadePanel의 raycast 차단 복원
+            if (UI.FadeUI.Instance != null)
+                UI.FadeUI.Instance.SetBlocksRaycasts(true);
 
             // 이벤트 구독 해제
             UI.ResultUIController resultUI = UI.ResultUIController.Instance;

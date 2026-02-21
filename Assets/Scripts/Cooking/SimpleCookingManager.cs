@@ -81,7 +81,7 @@ namespace RecipeAboutLife.Cooking
         // 이벤트
         public event Action<CookingPhase> OnPhaseChanged;
         public event Action OnCookingStarted;   // 요리 시작 이벤트
-        public event Action OnHotdogServed;     // 요리 제공 완료 이벤트 (외부 시스템 연동용)
+        public event Action<int> OnHotdogServed;     // 요리 제공 완료 이벤트 (획득 금액 전달)
 
         public CookingPhase CurrentPhase => currentPhase;
         public GameObject CurrentHotdog => currentHotdog;
@@ -351,8 +351,8 @@ namespace RecipeAboutLife.Cooking
             // Phase 초기화
             currentPhase = CookingPhase.None;
 
-            // 요리 제공 완료 이벤트 발생 (외부 시스템 연동용)
-            OnHotdogServed?.Invoke();
+            // 요리 제공 완료 이벤트 발생 (획득 금액 전달)
+            OnHotdogServed?.Invoke(earnedMoney);
 
             Debug.Log("[SimpleCookingManager] 새 요리를 시작하려면 StartCooking()을 호출하세요.");
         }
@@ -367,13 +367,18 @@ namespace RecipeAboutLife.Cooking
 
             if (currentOrder != null)
             {
+                // 주문 vs 완성품 비교 로그
+                Debug.Log($"[SimpleCookingManager] === 주문 비교 점수 계산 ===");
+                Debug.Log($"  [주문] 재료: {currentOrder.filling1}, {currentOrder.filling2} / 설탕{(currentOrder.wantsSugar ? "O" : "X")}, 케첩{(currentOrder.wantsKetchup ? "O" : "X")}, 머스타드{(currentOrder.wantsMustard ? "O" : "X")}");
+                Debug.Log($"  [완성] 재료: {hotdogData.filling1}, {hotdogData.filling2} / 설탕{(hotdogData.hasSugar ? "O" : "X")}, 케첩{(hotdogData.hasKetchup ? "O" : "X")}, 머스타드{(hotdogData.hasMustard ? "O" : "X")}");
+
                 // 주문이 있으면 주문과 비교하여 점수 계산
                 return ScoreCalculator.Calculate(currentOrder, hotdogData);
             }
             else
             {
                 // 주문이 없으면 기본 점수 계산 (테스트용)
-                Debug.Log("[SimpleCookingManager] 주문 데이터 없음 - 기본 점수 계산");
+                Debug.LogWarning("[SimpleCookingManager] 주문 데이터 없음 - 기본 점수 계산 (주문 비교 불가)");
                 return ScoreCalculator.CalculateWithoutOrder(hotdogData);
             }
         }

@@ -6,10 +6,10 @@ namespace RecipeAboutLife.Cooking
     /// 점수 계산기
     /// 주문과 완성품을 비교하여 점수(돈) 계산
     /// 
-    /// 점수 구성 (최대 2000원):
+    /// 점수 구성 (최대 1800원):
     /// - 재료1 일치: 300원
     /// - 재료2 일치: 300원
-    /// - 튀김 상태: Golden 500원 / Yellow,Brown 300원 / Raw,Burnt 0원
+    /// - 튀김 상태: Golden 600원 / Yellow,Brown 300원 / Raw,Burnt 0원
     /// - 설탕 일치: 300원
     /// - 케첩 일치: 150원
     /// - 머스타드 일치: 150원
@@ -19,28 +19,28 @@ namespace RecipeAboutLife.Cooking
         #region Score Constants
 
         /// <summary>재료 일치 점수 (x2 = 600)</summary>
-        public const int FILLING_MATCH = 600;
+        public const int FILLING_MATCH = 300;
 
         /// <summary>튀김 완벽 (Golden)</summary>
-        public const int FRYING_PERFECT = 1500;
+        public const int FRYING_PERFECT = 600;
 
         /// <summary>튀김 괜찮음 (Yellow/Brown)</summary>
-        public const int FRYING_GOOD = 600;
+        public const int FRYING_GOOD = 300;
 
         /// <summary>튀김 실패 (Raw/Burnt)</summary>
         public const int FRYING_BAD = 0;
 
         /// <summary>설탕 일치</summary>
-        public const int SUGAR_MATCH = 600;
+        public const int SUGAR_MATCH = 300;
 
         /// <summary>케첩 일치</summary>
-        public const int KETCHUP_MATCH = 300;
+        public const int KETCHUP_MATCH = 150;
 
         /// <summary>머스타드 일치</summary>
-        public const int MUSTARD_MATCH = 300;
+        public const int MUSTARD_MATCH = 150;
 
         /// <summary>최대 점수</summary>
-        public const int MAX_SCORE = FILLING_MATCH * 2 + FRYING_PERFECT + SUGAR_MATCH + KETCHUP_MATCH + MUSTARD_MATCH; // 2000
+        public const int MAX_SCORE = FILLING_MATCH * 2 + FRYING_PERFECT + SUGAR_MATCH + KETCHUP_MATCH + MUSTARD_MATCH; // 1800
 
         #endregion
 
@@ -117,7 +117,7 @@ namespace RecipeAboutLife.Cooking
         {
             return state switch
             {
-                FryingState.Golden => FRYING_PERFECT,  // 500원
+                FryingState.Golden => FRYING_PERFECT,  // 600원
                 FryingState.Yellow => FRYING_GOOD,     // 300원
                 FryingState.Brown => FRYING_GOOD,      // 300원
                 FryingState.Raw => FRYING_BAD,         // 0원

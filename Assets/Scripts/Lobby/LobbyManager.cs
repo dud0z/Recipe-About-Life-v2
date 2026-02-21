@@ -36,6 +36,24 @@ namespace RecipeAboutLife.Lobby
 
         private void Start()
         {
+            // stagePins가 Inspector에서 설정되지 않은 경우 씬에서 자동 탐색
+            if (stagePins == null || stagePins.Count == 0)
+            {
+                var rootObjects = gameObject.scene.GetRootGameObjects();
+                List<StagePin> foundPins = new List<StagePin>();
+                foreach (var root in rootObjects)
+                {
+                    foundPins.AddRange(root.GetComponentsInChildren<StagePin>(true));
+                }
+                stagePins = foundPins;
+                stagePins.Sort((a, b) => a.StageIndex.CompareTo(b.StageIndex));
+                Debug.Log($"[Lobby] StagePin 자동 탐색: {stagePins.Count}개 발견");
+                foreach (var pin in stagePins)
+                {
+                    Debug.Log($"[Lobby]   - {pin.name} (StageIndex: {pin.StageIndex}, Active: {pin.gameObject.activeSelf})");
+                }
+            }
+
             // GameManager의 currentDay에 따라 핀 활성/비활성화
             if (GameManager.Instance != null)
             {
@@ -44,7 +62,9 @@ namespace RecipeAboutLife.Lobby
                 {
                     if (stagePins[i] != null)
                     {
-                        stagePins[i].SetUnlocked(i + 1 <= currentDay);
+                        bool unlocked = (stagePins[i].StageIndex <= currentDay);
+                        stagePins[i].gameObject.SetActive(unlocked);
+                        stagePins[i].SetUnlocked(unlocked);
                     }
                 }
                 Debug.Log($"[Lobby] 핀 활성화 갱신 - 현재 Day: {currentDay}");
@@ -56,10 +76,10 @@ namespace RecipeAboutLife.Lobby
 
         private IEnumerator FadeOutOnStart()
         {
-            // 핀들 초기 색상을 검은색으로
+            // 핀들 초기 색상을 검은색으로 (활성 핀만)
             foreach (var pin in stagePins)
             {
-                if (pin != null)
+                if (pin != null && pin.gameObject.activeSelf)
                 {
                     pin.FadeToBlack(0f); // 즉시 검은색
                 }
@@ -75,7 +95,7 @@ namespace RecipeAboutLife.Lobby
                 fadeUI.FadeOut(0.5f);
                 foreach (var pin in stagePins)
                 {
-                    if (pin != null)
+                    if (pin != null && pin.gameObject.activeSelf)
                     {
                         pin.FadeToNormal(0.5f);
                     }
@@ -135,7 +155,7 @@ namespace RecipeAboutLife.Lobby
             // 핀들을 FadeUI보다 빠르게 검은색으로 페이드 (핀이 페이드 효과 위에 보이는 문제 방지)
             foreach (var pin in stagePins)
             {
-                if (pin != null)
+                if (pin != null && pin.gameObject.activeSelf)
                 {
                     pin.FadeToBlack(transitionDuration * 0.5f);
                 }

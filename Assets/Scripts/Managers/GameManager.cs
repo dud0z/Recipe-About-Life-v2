@@ -296,6 +296,21 @@ public class GameManager : MonoBehaviour
     private void DebugEndDay() => EndDay();
 #endif
 
+    /// <summary>
+    /// [디버그] 현재 Day를 강제 완료 (목표 달성 상태로 설정)
+    /// DebugStageSkipButton에서 호출
+    /// </summary>
+    public void DebugForceCompleteDay()
+    {
+        int goal = GetCurrentDayGoal();
+        todayEarnings = goal;
+        customersServed = customersPerDay;
+        currentDayResult.earnedAmount = todayEarnings;
+        currentDayResult.customersServed = customersServed;
+        currentDayResult.isGoalAchieved = true;
+        Debug.Log($"[GameManager] 강제 Day 완료: {todayEarnings}/{goal}");
+    }
+
     #region Order Management (팀원 NPC 시스템 연동)
 
     /// <summary>

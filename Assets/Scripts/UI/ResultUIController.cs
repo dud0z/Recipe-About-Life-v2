@@ -157,6 +157,9 @@ namespace RecipeAboutLife.UI
                 }
             }
 
+            // ResultCanvas를 FadePanel 위에 렌더링되도록 최상위로 이동
+            transform.SetAsLastSibling();
+
             // 패널 표시
             if (resultPanel != null)
             {
