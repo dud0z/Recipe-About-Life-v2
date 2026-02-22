@@ -49,6 +49,9 @@ public class GameUIManager : MonoBehaviour
     public Button settingsButton;    // 설정
     public Button quitButton;        // 종료
 
+    [Header("=== Settings Popup ===")]
+    public RecipeAboutLife.UI.SettingsPopupController settingsPopupController;
+
     private GameManager gameManager;
     private Coroutine hideMoneyCoroutine;
     private bool isPopupOpen = false;  // 팝업 열림 상태 추적
@@ -412,9 +415,11 @@ public class GameUIManager : MonoBehaviour
     {
         // 버튼 클릭 소리 재생
         AudioManager.Instance?.PlayButtonClick();
-        
+
         Debug.Log("[GameUIManager] 설정 버튼 클릭");
-        gameManager?.OpenSetting();
+
+        if (settingsPopupController != null)
+            settingsPopupController.Show();
     }
 
     /// <summary>

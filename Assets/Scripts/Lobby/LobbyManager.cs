@@ -117,6 +117,13 @@ namespace RecipeAboutLife.Lobby
             }
 
             selectedStage = stageIndex;
+
+            // 선택한 스테이지에 맞게 Day 설정 (목표 금액, 배경, 진행상황 초기화)
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetDay(stageIndex);
+            }
+
             StartCoroutine(TransitionToGamePlay());
         }
 

@@ -108,6 +108,8 @@ namespace RecipeAboutLife.Cooking
         {
             if (soundSettings == null) return;
 
+            AudioListener.volume = soundSettings.masterVolume;
+
             if (bgmSource != null)
                 bgmSource.volume = soundSettings.bgmVolume;
 
@@ -224,7 +226,8 @@ namespace RecipeAboutLife.Cooking
         /// </summary>
         public void PlayButtonClick()
         {
-            PlaySFX(soundSettings?.buttonClickSound, "버튼 클릭");
+            if (soundSettings?.buttonClickSound == null || sfxSource == null) return;
+            sfxSource.PlayOneShot(soundSettings.buttonClickSound, (soundSettings?.sfxVolume ?? 1f) * 0.4f);
         }
 
         /// <summary>
@@ -350,6 +353,17 @@ namespace RecipeAboutLife.Cooking
         #endregion
 
         #region Volume Control
+
+        /// <summary>
+        /// 전체 음향(마스터) 볼륨 설정
+        /// </summary>
+        public void SetMasterVolume(float volume)
+        {
+            if (soundSettings != null)
+                soundSettings.masterVolume = Mathf.Clamp01(volume);
+
+            AudioListener.volume = Mathf.Clamp01(volume);
+        }
 
         /// <summary>
         /// BGM 볼륨 설정

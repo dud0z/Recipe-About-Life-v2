@@ -53,6 +53,15 @@ namespace RecipeAboutLife.UI
         [Tooltip("확인 버튼")]
         private Button confirmButton;
 
+        [Header("Day 이미지")]
+        [SerializeField]
+        [Tooltip("ResultPaper 아래 DAY 오브젝트의 Image")]
+        private Image dayImage;
+
+        [SerializeField]
+        [Tooltip("Day별 이미지 스프라이트 ([0]=Day1, [1]=Day2, [2]=Day3)")]
+        private Sprite[] daySprites;
+
         // ==========================================
         // State
         // ==========================================
@@ -154,6 +163,18 @@ namespace RecipeAboutLife.UI
                 {
                     resultMessageText.text = "목표 미달성";
                     resultMessageText.color = Color.black;
+                }
+            }
+
+            // Day 이미지 교체
+            if (dayImage != null && daySprites != null && daySprites.Length > 0)
+            {
+                int dayIndex = GameManager.Instance != null
+                    ? GameManager.Instance.CurrentDay - 1 : 0;
+                if (dayIndex >= 0 && dayIndex < daySprites.Length)
+                {
+                    dayImage.sprite = daySprites[dayIndex];
+                    Debug.Log($"[ResultUIController] Day {dayIndex + 1} 이미지로 변경");
                 }
             }
 

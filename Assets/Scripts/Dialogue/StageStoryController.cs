@@ -79,6 +79,9 @@ namespace RecipeAboutLife.Dialogue
         // AfterStory 전용 NPC 진행 상태
         private bool isPlayingAfterStoryOnly = false;
 
+        // 게임 클리어 상태 (Day3 완료 시 true)
+        private bool isGameCleared = false;
+
         [Header("대화 표시 설정")]
         [SerializeField]
         [Tooltip("각 대화 라인 표시 시간 (초)")]
@@ -230,9 +233,10 @@ namespace RecipeAboutLife.Dialogue
             }
             else
             {
-                // 결산 UI 없으면 바로 페이드 전환 시작
+                // 결산 UI 없으면 바로 페이드 전환 시작 (StartNextDay 미호출이므로 현재 Day 그대로 사용)
+                int currentDay = GameManager.Instance != null ? GameManager.Instance.CurrentDay : 1;
                 Debug.LogWarning("[StageStoryController] ResultUIController를 찾을 수 없습니다. 페이드 효과 없이 스토리 대화 진행");
-                StartCoroutine(TransitionToStoryDialogue(success));
+                StartCoroutine(TransitionToStoryDialogue(success, currentDay));
             }
         }
 
@@ -267,22 +271,26 @@ namespace RecipeAboutLife.Dialogue
                 return;
             }
 
-            // 성공 시: 다음 Day로 진행
+            // 성공 시: 클리어한 Day 저장 후 다음 Day로 진행
+            int clearedDay = GameManager.Instance != null ? GameManager.Instance.CurrentDay : 1;
+
             if (GameManager.Instance != null)
             {
                 if (GameManager.Instance.CurrentDay < GameManager.Instance.maxDay)
                 {
                     GameManager.Instance.StartNextDay();
+                    isGameCleared = false;
                     Debug.Log($"[StageStoryController] 다음 Day로 진행: Day {GameManager.Instance.CurrentDay}");
                 }
                 else
                 {
+                    isGameCleared = true;
                     Debug.Log("[StageStoryController] 모든 Day 완료! 게임 클리어!");
                 }
             }
 
             // 성공 시 검은 화면 유지한 채로 GuideText → 페이드 아웃 → 스토리 대화 시작
-            StartCoroutine(TransitionToStoryDialogue(success));
+            StartCoroutine(TransitionToStoryDialogue(success, clearedDay));
         }
 
         /// <summary>
@@ -319,7 +327,7 @@ namespace RecipeAboutLife.Dialogue
         /// <summary>
         /// 스토리 대화로 전환 (검은 화면 상태에서 GuideText 표시 후 페이드 아웃)
         /// </summary>
-        private System.Collections.IEnumerator TransitionToStoryDialogue(bool success)
+        private System.Collections.IEnumerator TransitionToStoryDialogue(bool success, int clearedDay)
         {
             UI.FadeUI fadeUI = UI.FadeUI.Instance;
 
@@ -356,8 +364,8 @@ namespace RecipeAboutLife.Dialogue
                 // (아직 검은 화면 상태이므로 안 보임)
                 if (UI.FramePanelUI.Instance != null)
                 {
-                    UI.FramePanelUI.Instance.Show();
-                    Debug.Log("[StageStoryController] 4. FramePanel 표시 (검은 화면에서)");
+                    UI.FramePanelUI.Instance.Show(clearedDay);
+                    Debug.Log($"[StageStoryController] 4. FramePanel 표시 - Day {clearedDay} 배경 (검은 화면에서)");
                 }
 
                 // 대화 데이터 준비
@@ -833,18 +841,17 @@ namespace RecipeAboutLife.Dialogue
                     Debug.Log("[StageStoryController] FramePanel 숨김");
                 }
 
-                // 2. Day 정보 또는 "로비로" 텍스트 표시
+                // 2. Day 정보 또는 "To be continued.." 텍스트 표시
                 string transitionText = "로비로";
                 if (GameManager.Instance != null)
                 {
-                    int nextDay = GameManager.Instance.CurrentDay;
-                    if (nextDay <= GameManager.Instance.maxDay)
+                    if (isGameCleared)
                     {
-                        transitionText = $"Day {nextDay}";
+                        transitionText = "To be continued..";
                     }
                     else
                     {
-                        transitionText = "클리어!";
+                        transitionText = $"Day {GameManager.Instance.CurrentDay}";
                     }
                 }
                 Debug.Log($"[StageStoryController] 2. '{transitionText}' 텍스트 표시");
@@ -861,14 +868,25 @@ namespace RecipeAboutLife.Dialogue
                 // 추가 0.5초 대기
                 yield return new WaitForSeconds(0.5f);
 
-                // 5. 로비 씬 로드
-                Debug.Log("[StageStoryController] 4. 로비 씬 로드");
-                LoadLobbyScene();
+                // 5. 씬 로드
+                if (isGameCleared)
+                {
+                    Debug.Log("[StageStoryController] 4. 메인 메뉴 씬 로드 (게임 클리어)");
+                    LoadMainMenuScene();
+                }
+                else
+                {
+                    Debug.Log("[StageStoryController] 4. 로비 씬 로드");
+                    LoadLobbyScene();
+                }
             }
             else
             {
-                Debug.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 바로 로비로 이동");
-                LoadLobbyScene();
+                Debug.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 바로 이동");
+                if (isGameCleared)
+                    LoadMainMenuScene();
+                else
+                    LoadLobbyScene();
             }
         }
 
@@ -878,15 +896,16 @@ namespace RecipeAboutLife.Dialogue
         private void LoadLobbyScene()
         {
             Debug.Log("[StageStoryController] 로비 씬으로 이동!");
-
-            // TODO: 실제 씬 이름으로 변경 필요
             UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
+        }
 
-            // 또는 SceneLoader 매니저가 있다면:
-            // if (SceneLoader.Instance != null)
-            // {
-            //     SceneLoader.Instance.LoadScene("Lobby");
-            // }
+        /// <summary>
+        /// 메인 메뉴 씬 로드 (Day3 클리어 시)
+        /// </summary>
+        private void LoadMainMenuScene()
+        {
+            Debug.Log("[StageStoryController] 메인 메뉴 씬으로 이동!");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenuScene");
         }
 
         /// <summary>

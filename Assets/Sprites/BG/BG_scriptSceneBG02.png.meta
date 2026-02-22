@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: 4366f2e0398f46345a800b2e87d5a61d
+guid: 9f70f6dad55c7fb46a592c5053ba88c1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1010108381727442782
-    second: day-18_0
-  - first:
-      213: 672971455079149137
-    second: day-18_1
-  - first:
-      213: 8523802664961724253
-    second: day-18_2
-  - first:
-      213: -2767960138530109049
-    second: day-18_3
+      213: 2110242810516013692
+    second: BG_scriptSceneBG02_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -122,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: day-18_0
+      name: BG_scriptSceneBG02_0
       rect:
         serializedVersion: 2
-        x: 70
-        y: 106
-        width: 468
-        height: 533
+        x: 0
+        y: 0
+        width: 3840
+        height: 2160
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,74 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2a8bd7257cf5bf1f0800000000000000
-      internalID: -1010108381727442782
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: day-18_1
-      rect:
-        serializedVersion: 2
-        x: 551
-        y: 106
-        width: 545
-        height: 533
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 15e68fb09ffd65900800000000000000
-      internalID: 672971455079149137
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: day-18_2
-      rect:
-        serializedVersion: 2
-        x: 1068
-        y: 106
-        width: 531
-        height: 533
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d5f429cdc51aa4670800000000000000
-      internalID: 8523802664961724253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: day-18_3
-      rect:
-        serializedVersion: 2
-        x: 1870
-        y: 106
-        width: 416
-        height: 540
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 789c8765bea3699d0800000000000000
-      internalID: -2767960138530109049
+      spriteID: c7201a6d7a6194d10800000000000000
+      internalID: 2110242810516013692
       vertices: []
       indices: 
       edges: []
@@ -213,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -223,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      day-18_0: -1010108381727442782
-      day-18_1: 672971455079149137
-      day-18_2: 8523802664961724253
-      day-18_3: -2767960138530109049
+      BG_scriptSceneBG02_0: 2110242810516013692
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

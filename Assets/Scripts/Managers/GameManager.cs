@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public int maxDay = 3;
 
     [Header("=== Day Goal Settings ===")]
-    public int[] dayGoals = { 6000, 8000, 9000 };  // Day별 목표 금액
+    public int[] dayGoals = { 6000, 7000, 8000 };  // Day별 목표 금액
     public int customersPerDay = 5;                 // 하루 손님 수
 
     [Header("=== Money Settings ===")]
@@ -151,6 +151,8 @@ public class GameManager : MonoBehaviour
         
         todayEarnings = 0;
         customersServed = 0;
+        currentMoney = 0;
+        OnMoneyChanged?.Invoke(currentMoney);
     }
 
     #endregion
@@ -259,8 +261,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OpenSetting()
     {
-        // 설정 팝업 열기 로직 (추후 구현)
-        Debug.Log("[GameManager] 설정 열기");
+        if (RecipeAboutLife.UI.SettingsPopupController.Instance != null)
+        {
+            RecipeAboutLife.UI.SettingsPopupController.Instance.Show();
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] SettingsPopupController가 없습니다!");
+        }
     }
 
     /// <summary>

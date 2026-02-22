@@ -47,6 +47,10 @@ namespace RecipeAboutLife.Cooking
 
         [Header("=== Volume Settings ===")]
         [Range(0f, 1f)]
+        [Tooltip("전체 음향 볼륨 (마스터)")]
+        public float masterVolume = 1f;
+
+        [Range(0f, 1f)]
         [Tooltip("효과음 볼륨")]
         public float sfxVolume = 1f;
 

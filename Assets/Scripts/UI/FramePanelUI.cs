@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using RecipeAboutLife.Managers;
 
 namespace RecipeAboutLife.UI
 {
@@ -34,6 +36,23 @@ namespace RecipeAboutLife.UI
         [SerializeField]
         [Tooltip("프레임 패널 (전체 UI 컨테이너)")]
         private GameObject framePanel;
+
+        [Header("Day별 배경")]
+        [SerializeField]
+        [Tooltip("FramePanel 자체의 Image (배경 레이어)")]
+        private Image framePanelImage;
+
+        [SerializeField]
+        [Tooltip("Day별 배경 스프라이트 ([0]=Day1, [1]=Day2, [2]=Day3) - BG_scriptSceneBG0X")]
+        private Sprite[] dayBackgroundSprites;
+
+        [SerializeField]
+        [Tooltip("BGImage 오브젝트의 Image (전경 레이어)")]
+        private Image bgImage;
+
+        [SerializeField]
+        [Tooltip("Day별 전경 스프라이트 ([0]=Day1, [1]=Day2, [2]=Day3) - BG_scriptScene0X")]
+        private Sprite[] dayForegroundSprites;
 
         // ==========================================
         // Lifecycle
@@ -71,8 +90,36 @@ namespace RecipeAboutLife.UI
         /// </summary>
         public void Show()
         {
+            int day = GameManager.Instance != null ? GameManager.Instance.CurrentDay : 1;
+            Show(day);
+        }
+
+        /// <summary>
+        /// 프레임 패널 표시 (명시적 Day 지정)
+        /// </summary>
+        /// <param name="day">표시할 Day 번호 (1, 2, 3)</param>
+        public void Show(int day)
+        {
             if (framePanel != null)
             {
+                int dayIndex = day - 1;
+
+                // 배경 레이어 (FramePanel Image - BG_scriptSceneBG0X)
+                if (framePanelImage != null && dayBackgroundSprites != null && dayBackgroundSprites.Length > 0)
+                {
+                    if (dayIndex >= 0 && dayIndex < dayBackgroundSprites.Length)
+                        framePanelImage.sprite = dayBackgroundSprites[dayIndex];
+                }
+
+                // 전경 레이어 (BGImage - BG_scriptScene0X)
+                if (bgImage != null && dayForegroundSprites != null && dayForegroundSprites.Length > 0)
+                {
+                    if (dayIndex >= 0 && dayIndex < dayForegroundSprites.Length)
+                        bgImage.sprite = dayForegroundSprites[dayIndex];
+                }
+
+                Debug.Log($"[FramePanelUI] Day {day} 배경/전경 스프라이트로 변경");
+
                 framePanel.SetActive(true);
                 Debug.Log("[FramePanelUI] 프레임 패널 활성화 (확대 연출)");
             }
