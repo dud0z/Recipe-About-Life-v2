@@ -136,7 +136,7 @@ namespace RecipeAboutLife.Dialogue
         {
             // 로비에서 선택한 스테이지 인덱스 로드
             currentStageID = PlayerPrefs.GetInt("SelectedStageIndex", 1);
-            Debug.Log($"[StageStoryController] 선택된 스테이지 로드: {currentStageID}");
+            DebugLogger.Log($"[StageStoryController] 선택된 스테이지 로드: {currentStageID}");
         }
 
         private void OnEnable()
@@ -192,7 +192,7 @@ namespace RecipeAboutLife.Dialogue
                 success = GameManager.Instance.IsDayGoalAchieved();
             }
 
-            Debug.Log($"[StageStoryController] 스테이지 완료! 성공: {success}, Stage ID: {currentStageID}");
+            DebugLogger.Log($"[StageStoryController] 스테이지 완료! 성공: {success}, Stage ID: {currentStageID}");
 
             // 페이드 인 후 결산 UI 표시
             if (UI.FadeUI.Instance != null)
@@ -206,7 +206,7 @@ namespace RecipeAboutLife.Dialogue
             else
             {
                 // FadeUI 없으면 바로 결산 UI 표시
-                Debug.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 페이드 효과 없이 진행");
+                DebugLogger.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 페이드 효과 없이 진행");
                 ShowResultUI(success);
             }
         }
@@ -229,13 +229,13 @@ namespace RecipeAboutLife.Dialogue
                 // 확인 버튼 클릭 이벤트 구독
                 resultUI.OnConfirmClicked += OnResultUIConfirmed;
 
-                Debug.Log("[StageStoryController] 결산 UI 표시");
+                DebugLogger.Log("[StageStoryController] 결산 UI 표시");
             }
             else
             {
                 // 결산 UI 없으면 바로 페이드 전환 시작 (StartNextDay 미호출이므로 현재 Day 그대로 사용)
                 int currentDay = GameManager.Instance != null ? GameManager.Instance.CurrentDay : 1;
-                Debug.LogWarning("[StageStoryController] ResultUIController를 찾을 수 없습니다. 페이드 효과 없이 스토리 대화 진행");
+                DebugLogger.LogWarning("[StageStoryController] ResultUIController를 찾을 수 없습니다. 페이드 효과 없이 스토리 대화 진행");
                 StartCoroutine(TransitionToStoryDialogue(success, currentDay));
             }
         }
@@ -246,7 +246,7 @@ namespace RecipeAboutLife.Dialogue
         /// <param name="success">재화 목표 달성 여부</param>
         private void OnResultUIConfirmed(bool success)
         {
-            Debug.Log($"[StageStoryController] 결산 UI 확인 버튼 클릭 - 성공: {success}");
+            DebugLogger.Log($"[StageStoryController] 결산 UI 확인 버튼 클릭 - 성공: {success}");
 
             // FadePanel의 raycast 차단 복원
             if (UI.FadeUI.Instance != null)
@@ -262,7 +262,7 @@ namespace RecipeAboutLife.Dialogue
             // 실패 시: Day 재시작 + 로비 이동
             if (!success)
             {
-                Debug.Log("[StageStoryController] 목표 미달성! Day 재시작 후 로비로 이동");
+                DebugLogger.Log("[StageStoryController] 목표 미달성! Day 재시작 후 로비로 이동");
                 if (GameManager.Instance != null)
                 {
                     GameManager.Instance.RestartDay();
@@ -280,12 +280,12 @@ namespace RecipeAboutLife.Dialogue
                 {
                     GameManager.Instance.StartNextDay();
                     isGameCleared = false;
-                    Debug.Log($"[StageStoryController] 다음 Day로 진행: Day {GameManager.Instance.CurrentDay}");
+                    DebugLogger.Log($"[StageStoryController] 다음 Day로 진행: Day {GameManager.Instance.CurrentDay}");
                 }
                 else
                 {
                     isGameCleared = true;
-                    Debug.Log("[StageStoryController] 모든 Day 완료! 게임 클리어!");
+                    DebugLogger.Log("[StageStoryController] 모든 Day 완료! 게임 클리어!");
                 }
             }
 
@@ -320,7 +320,7 @@ namespace RecipeAboutLife.Dialogue
             }
 
             // 로비 씬 로드
-            Debug.Log("[StageStoryController] 실패 → 로비 씬 로드");
+            DebugLogger.Log("[StageStoryController] 실패 → 로비 씬 로드");
             UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
         }
 
@@ -333,39 +333,39 @@ namespace RecipeAboutLife.Dialogue
 
             if (fadeUI != null)
             {
-                Debug.Log("[StageStoryController] === 스토리 대화 전환 시작 (검은 화면 상태) ===");
+                DebugLogger.Log("[StageStoryController] === 스토리 대화 전환 시작 (검은 화면 상태) ===");
 
                 // 1. 결산 UI 숨김 (검은 화면 유지)
                 UI.ResultUIController resultUI = UI.ResultUIController.Instance;
                 if (resultUI != null)
                 {
                     resultUI.Hide();
-                    Debug.Log("[StageStoryController] 1. 결산 UI 숨김 (검은 화면 유지)");
+                    DebugLogger.Log("[StageStoryController] 1. 결산 UI 숨김 (검은 화면 유지)");
                 }
 
                 // 1초 대기
                 yield return new WaitForSeconds(1f);
-                Debug.Log("[StageStoryController] 결산 UI 숨김 후 1초 대기 완료");
+                DebugLogger.Log("[StageStoryController] 결산 UI 숨김 후 1초 대기 완료");
 
                 // 2. "잠시만요" 텍스트 표시 (검은 화면에서)
-                Debug.Log($"[StageStoryController] 2. GuideText 표시 시작 ('{waitTextDuration}'초)");
+                DebugLogger.Log($"[StageStoryController] 2. GuideText 표시 시작 ('{waitTextDuration}'초)");
                 fadeUI.ShowText("잠시만요");
                 yield return new WaitForSeconds(waitTextDuration);
 
                 // 3. 텍스트 숨김
                 fadeUI.HideText();
-                Debug.Log("[StageStoryController] 3. GuideText 숨김");
+                DebugLogger.Log("[StageStoryController] 3. GuideText 숨김");
 
                 // 텍스트 표시 후 1초 대기
                 yield return new WaitForSeconds(1f);
-                Debug.Log("[StageStoryController] GuideText 후 1초 대기 완료");
+                DebugLogger.Log("[StageStoryController] GuideText 후 1초 대기 완료");
 
                 // 4. FramePanel, NPCDialoguePanel, PlayerDialoguePanel 표시
                 // (아직 검은 화면 상태이므로 안 보임)
                 if (UI.FramePanelUI.Instance != null)
                 {
                     UI.FramePanelUI.Instance.Show(clearedDay);
-                    Debug.Log($"[StageStoryController] 4. FramePanel 표시 - Day {clearedDay} 배경 (검은 화면에서)");
+                    DebugLogger.Log($"[StageStoryController] 4. FramePanel 표시 - Day {clearedDay} 배경 (검은 화면에서)");
                 }
 
                 // 대화 데이터 준비
@@ -376,17 +376,17 @@ namespace RecipeAboutLife.Dialogue
                 {
                     string npcName = currentDialogueSet != null ? currentDialogueSet.npcDisplayName : null;
                     UI.NPCDialogueUI.Instance.Show("", npcName, currentNPCSprite);
-                    Debug.Log("[StageStoryController] NPC 대화 패널 표시 (빈 텍스트)");
+                    DebugLogger.Log("[StageStoryController] NPC 대화 패널 표시 (빈 텍스트)");
                 }
 
                 if (UI.PlayerDialogueUI.Instance != null)
                 {
                     UI.PlayerDialogueUI.Instance.Show("");
-                    Debug.Log("[StageStoryController] Player 대화 패널 표시 (빈 텍스트)");
+                    DebugLogger.Log("[StageStoryController] Player 대화 패널 표시 (빈 텍스트)");
                 }
 
                 // 5. 페이드 아웃 (화면 밝아지면서 Panel들이 보임)
-                Debug.Log("[StageStoryController] 5. 페이드 아웃 시작");
+                DebugLogger.Log("[StageStoryController] 5. 페이드 아웃 시작");
                 bool fadeOutComplete = false;
                 fadeUI.FadeOut(fadeDuration, () => fadeOutComplete = true);
 
@@ -395,16 +395,16 @@ namespace RecipeAboutLife.Dialogue
                 {
                     yield return null;
                 }
-                Debug.Log("[StageStoryController] 페이드 아웃 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 아웃 완료");
 
                 // 페이드 완료 후 1초 대기
                 yield return new WaitForSeconds(1f);
-                Debug.Log("[StageStoryController] 페이드 아웃 후 1초 대기 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 아웃 후 1초 대기 완료");
             }
             else
             {
                 // FadeUI 없으면 바로 결산 UI 숨김
-                Debug.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 페이드 효과 없이 진행");
+                DebugLogger.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 페이드 효과 없이 진행");
                 UI.ResultUIController resultUI = UI.ResultUIController.Instance;
                 if (resultUI != null)
                 {
@@ -421,7 +421,7 @@ namespace RecipeAboutLife.Dialogue
             }
 
             // 6. 스토리 대화 시작
-            Debug.Log("[StageStoryController] 6. 스토리 대화 시작");
+            DebugLogger.Log("[StageStoryController] 6. 스토리 대화 시작");
             StartStoryDialogue();
         }
 
@@ -442,7 +442,7 @@ namespace RecipeAboutLife.Dialogue
             // 재화 조건 달성 확인
             if (!success)
             {
-                Debug.Log("[StageStoryController] 재화 목표 미달성. StoryAfterSummary 대화를 실행하지 않습니다.");
+                DebugLogger.Log("[StageStoryController] 재화 목표 미달성. StoryAfterSummary 대화를 실행하지 않습니다.");
                 return;
             }
 
@@ -451,26 +451,26 @@ namespace RecipeAboutLife.Dialogue
                 // AfterStory 전용 NPC 사용 (Stage 3의 Ajeossi)
                 if (!storyNPCConfig.HasStoryNPCForStage(currentStageID, afterStoryOnly: true))
                 {
-                    Debug.LogWarning($"[StageStoryController] Stage {currentStageID}에 AfterStory 전용 NPC가 없습니다!");
+                    DebugLogger.LogWarning($"[StageStoryController] Stage {currentStageID}에 AfterStory 전용 NPC가 없습니다!");
                     return;
                 }
 
                 currentDialogueSet = storyNPCConfig.GetDialogueSetForStage(currentStageID, afterStoryOnly: true);
                 currentNPCSprite = storyNPCConfig.GetSpriteForStage(currentStageID, afterStoryOnly: true);
-                Debug.Log($"[StageStoryController] ✅ AfterStory 전용 NPC 사용 (추가 AfterStory)");
+                DebugLogger.Log($"[StageStoryController] ✅ AfterStory 전용 NPC 사용 (추가 AfterStory)");
             }
             else
             {
                 // 일반 스토리 NPC 사용 (5번째 손님)
                 if (!storyNPCConfig.HasStoryNPCForStage(currentStageID, afterStoryOnly: false))
                 {
-                    Debug.LogWarning($"[StageStoryController] Stage {currentStageID}에 스토리 NPC가 설정되지 않았습니다!");
+                    DebugLogger.LogWarning($"[StageStoryController] Stage {currentStageID}에 스토리 NPC가 설정되지 않았습니다!");
                     return;
                 }
 
                 currentDialogueSet = storyNPCConfig.GetDialogueSetForStage(currentStageID, afterStoryOnly: false);
                 currentNPCSprite = storyNPCConfig.GetSpriteForStage(currentStageID, afterStoryOnly: false);
-                Debug.Log($"[StageStoryController] ✅ 일반 스토리 NPC 사용 (5번째 손님)");
+                DebugLogger.Log($"[StageStoryController] ✅ 일반 스토리 NPC 사용 (5번째 손님)");
             }
 
             // DialogueSet 확인
@@ -487,11 +487,11 @@ namespace RecipeAboutLife.Dialogue
                 return;
             }
 
-            Debug.Log($"[StageStoryController] ✅ 스토리 대화 데이터 준비 완료");
-            Debug.Log($"  - Stage: {currentStageID}");
-            Debug.Log($"  - NPC: {currentDialogueSet.npcID}");
-            Debug.Log($"  - AfterStory 전용: {useAfterStoryOnly}");
-            Debug.Log($"  - 재화 달성: {success}");
+            DebugLogger.Log($"[StageStoryController] ✅ 스토리 대화 데이터 준비 완료");
+            DebugLogger.Log($"  - Stage: {currentStageID}");
+            DebugLogger.Log($"  - NPC: {currentDialogueSet.npcID}");
+            DebugLogger.Log($"  - AfterStory 전용: {useAfterStoryOnly}");
+            DebugLogger.Log($"  - 재화 달성: {success}");
 
             isStoryDialogueTriggered = true;
         }
@@ -512,12 +512,12 @@ namespace RecipeAboutLife.Dialogue
             DialogueLine[] dialogueLines = currentDialogueSet.GetDialogueLines(DialogueType.StoryAfterSummary);
             if (dialogueLines == null || dialogueLines.Length == 0)
             {
-                Debug.LogWarning($"[StageStoryController] {currentDialogueSet.npcID}에 StoryAfterSummary 대화가 없습니다!");
+                DebugLogger.LogWarning($"[StageStoryController] {currentDialogueSet.npcID}에 StoryAfterSummary 대화가 없습니다!");
                 isStoryDialogueTriggered = false;
                 return;
             }
 
-            Debug.Log($"[StageStoryController] StoryAfterSummary 대화 시작! NPC: {currentDialogueSet.npcID}");
+            DebugLogger.Log($"[StageStoryController] StoryAfterSummary 대화 시작! NPC: {currentDialogueSet.npcID}");
 
             // 이벤트 발생
             OnStoryDialogueStarted?.Invoke();
@@ -596,7 +596,7 @@ namespace RecipeAboutLife.Dialogue
                     break;
             }
 
-            Debug.Log($"[StageStoryController] [{line.speaker}] {line.text}");
+            DebugLogger.Log($"[StageStoryController] [{line.speaker}] {line.text}");
         }
 
         /// <summary>
@@ -612,7 +612,7 @@ namespace RecipeAboutLife.Dialogue
             }
             else
             {
-                Debug.LogWarning("[StageStoryController] NPCDialogueUI를 찾을 수 없습니다!");
+                DebugLogger.LogWarning("[StageStoryController] NPCDialogueUI를 찾을 수 없습니다!");
             }
 
             // Player 대화 UI는 항상 빈 텍스트로 표시
@@ -634,7 +634,7 @@ namespace RecipeAboutLife.Dialogue
             }
             else
             {
-                Debug.LogWarning("[StageStoryController] PlayerDialogueUI를 찾을 수 없습니다!");
+                DebugLogger.LogWarning("[StageStoryController] PlayerDialogueUI를 찾을 수 없습니다!");
             }
 
             // NPC 대화 UI는 빈 텍스트로 표시 (NPC 이름과 이미지는 유지)
@@ -650,7 +650,7 @@ namespace RecipeAboutLife.Dialogue
         /// </summary>
         private void OnStoryDialogueCompleted()
         {
-            Debug.Log("[StageStoryController] StoryAfterSummary 대화 종료!");
+            DebugLogger.Log("[StageStoryController] StoryAfterSummary 대화 종료!");
 
             // 데이터 정리
             currentDialogueSet = null;
@@ -664,7 +664,7 @@ namespace RecipeAboutLife.Dialogue
             if (isPlayingAfterStoryOnly)
             {
                 // Ajeossi AfterStory 완료 → 편지+독백 연출 확인
-                Debug.Log("[StageStoryController] AfterStory 전용 NPC 완료");
+                DebugLogger.Log("[StageStoryController] AfterStory 전용 NPC 완료");
                 isPlayingAfterStoryOnly = false;
 
                 // StageDialogueData에 AfterStory 연출이 있는지 확인
@@ -672,13 +672,13 @@ namespace RecipeAboutLife.Dialogue
                 if (stageData != null && stageData.HasAfterStory())
                 {
                     // 편지 + 독백 연출 시작
-                    Debug.Log("[StageStoryController] ✅ AfterStory 연출 (편지+독백) 시작");
+                    DebugLogger.Log("[StageStoryController] ✅ AfterStory 연출 (편지+독백) 시작");
                     StartCoroutine(PlayAfterStorySequence());
                 }
                 else
                 {
                     // AfterStory 연출 없음 → 바로 로비 이동
-                    Debug.Log("[StageStoryController] AfterStory 연출 없음. 로비로 이동");
+                    DebugLogger.Log("[StageStoryController] AfterStory 연출 없음. 로비로 이동");
                     StartCoroutine(TransitionToLobbyCoroutine());
                 }
                 return;
@@ -691,7 +691,7 @@ namespace RecipeAboutLife.Dialogue
             if (hasAfterStoryOnlyNPC)
             {
                 // 추가 AfterStory 진행
-                Debug.Log("[StageStoryController] ✅ AfterStory 전용 NPC가 있어서 추가 대화 진행");
+                DebugLogger.Log("[StageStoryController] ✅ AfterStory 전용 NPC가 있어서 추가 대화 진행");
                 isPlayingAfterStoryOnly = true;
                 StartCoroutine(TransitionToAdditionalAfterStoryCoroutine());
             }
@@ -702,13 +702,13 @@ namespace RecipeAboutLife.Dialogue
                 if (stageData != null && stageData.HasAfterStory())
                 {
                     // 편지 + 독백 연출 시작
-                    Debug.Log("[StageStoryController] ✅ AfterStory 연출 (편지+독백) 시작");
+                    DebugLogger.Log("[StageStoryController] ✅ AfterStory 연출 (편지+독백) 시작");
                     StartCoroutine(PlayAfterStorySequence());
                 }
                 else
                 {
                     // 로비 이동 시퀀스 시작 (패널은 페이드 인이 완료될 때까지 유지)
-                    Debug.Log("[StageStoryController] AfterStory 전용 NPC 없음. 로비로 이동");
+                    DebugLogger.Log("[StageStoryController] AfterStory 전용 NPC 없음. 로비로 이동");
                     StartCoroutine(TransitionToLobbyCoroutine());
                 }
             }
@@ -723,10 +723,10 @@ namespace RecipeAboutLife.Dialogue
 
             if (fadeUI != null)
             {
-                Debug.Log("[StageStoryController] === 추가 AfterStory 전환 시작 ===");
+                DebugLogger.Log("[StageStoryController] === 추가 AfterStory 전환 시작 ===");
 
                 // 1. 페이드 인 (검은 화면)
-                Debug.Log("[StageStoryController] 1. 페이드 인 시작");
+                DebugLogger.Log("[StageStoryController] 1. 페이드 인 시작");
                 bool fadeInComplete = false;
                 fadeUI.FadeIn(fadeDuration, () => fadeInComplete = true);
 
@@ -734,7 +734,7 @@ namespace RecipeAboutLife.Dialogue
                 {
                     yield return null;
                 }
-                Debug.Log("[StageStoryController] 페이드 인 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 인 완료");
 
                 yield return new WaitForSeconds(1f);
 
@@ -749,13 +749,13 @@ namespace RecipeAboutLife.Dialogue
                 }
 
                 // 3. "오랜만이다!" 텍스트 표시
-                Debug.Log("[StageStoryController] 2. GuideText '오랜만이다!' 표시");
+                DebugLogger.Log("[StageStoryController] 2. GuideText '오랜만이다!' 표시");
                 fadeUI.ShowText("오랜만이다!");
                 yield return new WaitForSeconds(waitTextDuration);
 
                 // 4. 텍스트 숨김
                 fadeUI.HideText();
-                Debug.Log("[StageStoryController] 3. GuideText 숨김");
+                DebugLogger.Log("[StageStoryController] 3. GuideText 숨김");
 
                 yield return new WaitForSeconds(1f);
 
@@ -775,7 +775,7 @@ namespace RecipeAboutLife.Dialogue
                 }
 
                 // 7. 페이드 아웃
-                Debug.Log("[StageStoryController] 4. 페이드 아웃 시작");
+                DebugLogger.Log("[StageStoryController] 4. 페이드 아웃 시작");
                 bool fadeOutComplete = false;
                 fadeUI.FadeOut(fadeDuration, () => fadeOutComplete = true);
 
@@ -783,7 +783,7 @@ namespace RecipeAboutLife.Dialogue
                 {
                     yield return null;
                 }
-                Debug.Log("[StageStoryController] 페이드 아웃 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 아웃 완료");
 
                 yield return new WaitForSeconds(1f);
             }
@@ -793,7 +793,7 @@ namespace RecipeAboutLife.Dialogue
             }
 
             // 8. 추가 AfterStory 대화 시작
-            Debug.Log("[StageStoryController] 5. 추가 AfterStory 대화 시작");
+            DebugLogger.Log("[StageStoryController] 5. 추가 AfterStory 대화 시작");
             StartStoryDialogue();
         }
 
@@ -806,10 +806,10 @@ namespace RecipeAboutLife.Dialogue
 
             if (fadeUI != null)
             {
-                Debug.Log("[StageStoryController] === 로비 이동 시퀀스 시작 ===");
+                DebugLogger.Log("[StageStoryController] === 로비 이동 시퀀스 시작 ===");
 
                 // 1. 페이드 인 (검은 화면)
-                Debug.Log("[StageStoryController] 1. 페이드 인 시작");
+                DebugLogger.Log("[StageStoryController] 1. 페이드 인 시작");
                 bool fadeInComplete = false;
                 fadeUI.FadeIn(fadeDuration, () => fadeInComplete = true);
 
@@ -818,27 +818,27 @@ namespace RecipeAboutLife.Dialogue
                 {
                     yield return null;
                 }
-                Debug.Log("[StageStoryController] 페이드 인 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 인 완료");
 
                 // 페이드 완료 후 1초 대기
                 yield return new WaitForSeconds(1f);
-                Debug.Log("[StageStoryController] 페이드 인 후 1초 대기 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 인 후 1초 대기 완료");
 
                 // 패널들 숨기기 (페이드 인이 완료되었으므로)
                 if (UI.NPCDialogueUI.Instance != null)
                 {
                     UI.NPCDialogueUI.Instance.Hide();
-                    Debug.Log("[StageStoryController] NPC 대화 UI 숨김");
+                    DebugLogger.Log("[StageStoryController] NPC 대화 UI 숨김");
                 }
                 if (UI.PlayerDialogueUI.Instance != null)
                 {
                     UI.PlayerDialogueUI.Instance.Hide();
-                    Debug.Log("[StageStoryController] Player 대화 UI 숨김");
+                    DebugLogger.Log("[StageStoryController] Player 대화 UI 숨김");
                 }
                 if (UI.FramePanelUI.Instance != null)
                 {
                     UI.FramePanelUI.Instance.Hide();
-                    Debug.Log("[StageStoryController] FramePanel 숨김");
+                    DebugLogger.Log("[StageStoryController] FramePanel 숨김");
                 }
 
                 // 2. Day 정보 또는 "To be continued.." 텍스트 표시
@@ -854,13 +854,13 @@ namespace RecipeAboutLife.Dialogue
                         transitionText = $"Day {GameManager.Instance.CurrentDay}";
                     }
                 }
-                Debug.Log($"[StageStoryController] 2. '{transitionText}' 텍스트 표시");
+                DebugLogger.Log($"[StageStoryController] 2. '{transitionText}' 텍스트 표시");
                 fadeUI.ShowText(transitionText);
 
                 // 3. 3초 대기 (클릭 대기 대신)
-                Debug.Log("[StageStoryController] 3. 3초 대기 중...");
+                DebugLogger.Log("[StageStoryController] 3. 3초 대기 중...");
                 yield return new WaitForSeconds(3f);
-                Debug.Log("[StageStoryController] 3초 대기 완료!");
+                DebugLogger.Log("[StageStoryController] 3초 대기 완료!");
 
                 // 4. 텍스트 숨김
                 fadeUI.HideText();
@@ -871,18 +871,18 @@ namespace RecipeAboutLife.Dialogue
                 // 5. 씬 로드
                 if (isGameCleared)
                 {
-                    Debug.Log("[StageStoryController] 4. 메인 메뉴 씬 로드 (게임 클리어)");
+                    DebugLogger.Log("[StageStoryController] 4. 메인 메뉴 씬 로드 (게임 클리어)");
                     LoadMainMenuScene();
                 }
                 else
                 {
-                    Debug.Log("[StageStoryController] 4. 로비 씬 로드");
+                    DebugLogger.Log("[StageStoryController] 4. 로비 씬 로드");
                     LoadLobbyScene();
                 }
             }
             else
             {
-                Debug.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 바로 이동");
+                DebugLogger.LogWarning("[StageStoryController] FadeUI를 찾을 수 없습니다. 바로 이동");
                 if (isGameCleared)
                     LoadMainMenuScene();
                 else
@@ -895,7 +895,7 @@ namespace RecipeAboutLife.Dialogue
         /// </summary>
         private void LoadLobbyScene()
         {
-            Debug.Log("[StageStoryController] 로비 씬으로 이동!");
+            DebugLogger.Log("[StageStoryController] 로비 씬으로 이동!");
             UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
         }
 
@@ -904,7 +904,7 @@ namespace RecipeAboutLife.Dialogue
         /// </summary>
         private void LoadMainMenuScene()
         {
-            Debug.Log("[StageStoryController] 메인 메뉴 씬으로 이동!");
+            DebugLogger.Log("[StageStoryController] 메인 메뉴 씬으로 이동!");
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenuScene");
         }
 
@@ -933,7 +933,7 @@ namespace RecipeAboutLife.Dialogue
             StageDialogueData stageData = GetCurrentStageDialogueData();
             if (stageData == null || !stageData.HasAfterStory())
             {
-                Debug.LogWarning("[StageStoryController] AfterStory 데이터가 없습니다!");
+                DebugLogger.LogWarning("[StageStoryController] AfterStory 데이터가 없습니다!");
                 yield break;
             }
 
@@ -944,10 +944,10 @@ namespace RecipeAboutLife.Dialogue
                 yield break;
             }
 
-            Debug.Log("[StageStoryController] === AfterStory 연출 시작 ===");
+            DebugLogger.Log("[StageStoryController] === AfterStory 연출 시작 ===");
 
             // 1. 페이드 인 (검은 화면)
-            Debug.Log("[StageStoryController] 1. 페이드 인 시작");
+            DebugLogger.Log("[StageStoryController] 1. 페이드 인 시작");
             bool fadeInComplete = false;
             fadeUI.FadeIn(fadeDuration, () => fadeInComplete = true);
 
@@ -955,7 +955,7 @@ namespace RecipeAboutLife.Dialogue
             {
                 yield return null;
             }
-            Debug.Log("[StageStoryController] 페이드 인 완료");
+            DebugLogger.Log("[StageStoryController] 페이드 인 완료");
 
             yield return new WaitForSeconds(0.5f);
 
@@ -970,25 +970,25 @@ namespace RecipeAboutLife.Dialogue
             }
 
             // 2. 편지 이미지 표시
-            Debug.Log("[StageStoryController] 2. 편지 이미지 표시");
+            DebugLogger.Log("[StageStoryController] 2. 편지 이미지 표시");
             Sprite letterImage = stageData.GetAfterStoryImage();
             fadeUI.ShowImage(letterImage);
 
             // 3. 3초 대기 (클릭 대기 대신)
-            Debug.Log("[StageStoryController] 3. 3초 대기 중...");
+            DebugLogger.Log("[StageStoryController] 3. 3초 대기 중...");
             yield return new WaitForSeconds(3f);
-            Debug.Log("[StageStoryController] 3초 대기 완료!");
+            DebugLogger.Log("[StageStoryController] 3초 대기 완료!");
 
             // 4. 편지 이미지 숨김
             fadeUI.HideImage();
-            Debug.Log("[StageStoryController] 4. 편지 이미지 숨김");
+            DebugLogger.Log("[StageStoryController] 4. 편지 이미지 숨김");
 
             yield return new WaitForSeconds(0.5f);
 
             // 5. 독백 대화가 있으면 진행
             if (stageData.HasAfterStoryDialogue())
             {
-                Debug.Log("[StageStoryController] 5. 독백 대화 시작");
+                DebugLogger.Log("[StageStoryController] 5. 독백 대화 시작");
 
                 // Player 대화 패널 표시 (빈 텍스트)
                 if (UI.PlayerDialogueUI.Instance != null)
@@ -997,7 +997,7 @@ namespace RecipeAboutLife.Dialogue
                 }
 
                 // 6. 페이드 아웃 (화면 밝아짐)
-                Debug.Log("[StageStoryController] 6. 페이드 아웃 시작");
+                DebugLogger.Log("[StageStoryController] 6. 페이드 아웃 시작");
                 bool fadeOutComplete = false;
                 fadeUI.FadeOut(fadeDuration, () => fadeOutComplete = true);
 
@@ -1005,18 +1005,18 @@ namespace RecipeAboutLife.Dialogue
                 {
                     yield return null;
                 }
-                Debug.Log("[StageStoryController] 페이드 아웃 완료");
+                DebugLogger.Log("[StageStoryController] 페이드 아웃 완료");
 
                 yield return new WaitForSeconds(0.5f);
 
                 // 7. Player 독백 재생
-                Debug.Log("[StageStoryController] 7. Player 독백 재생");
+                DebugLogger.Log("[StageStoryController] 7. Player 독백 재생");
                 List<DialogueLine> monologue = stageData.GetAfterStoryDialogue();
                 yield return PlayMonologueCoroutine(monologue);
             }
 
             // 8. 페이드 인 → 로비 이동
-            Debug.Log("[StageStoryController] 8. 로비 이동 시퀀스 시작");
+            DebugLogger.Log("[StageStoryController] 8. 로비 이동 시퀀스 시작");
             yield return TransitionToLobbyCoroutine();
         }
 
@@ -1027,7 +1027,7 @@ namespace RecipeAboutLife.Dialogue
         {
             if (lines == null || lines.Count == 0)
             {
-                Debug.LogWarning("[StageStoryController] 독백 대화가 없습니다!");
+                DebugLogger.LogWarning("[StageStoryController] 독백 대화가 없습니다!");
                 yield break;
             }
 
@@ -1041,7 +1041,7 @@ namespace RecipeAboutLife.Dialogue
                     UI.PlayerDialogueUI.Instance.Show(line.text);
                 }
 
-                Debug.Log($"[StageStoryController] [독백] {line.text}");
+                DebugLogger.Log($"[StageStoryController] [독백] {line.text}");
 
                 // 터치 입력 대기
                 float displayTime = line.displayDuration > 0 ? line.displayDuration : lineDisplayTime;
@@ -1060,7 +1060,7 @@ namespace RecipeAboutLife.Dialogue
                 UI.PlayerDialogueUI.Instance.Hide();
             }
 
-            Debug.Log("[StageStoryController] 독백 재생 완료");
+            DebugLogger.Log("[StageStoryController] 독백 재생 완료");
         }
 
 
@@ -1075,7 +1075,7 @@ namespace RecipeAboutLife.Dialogue
         public void SetCurrentStageID(int stageID)
         {
             currentStageID = stageID;
-            Debug.Log($"[StageStoryController] 현재 스테이지: {currentStageID}");
+            DebugLogger.Log($"[StageStoryController] 현재 스테이지: {currentStageID}");
         }
 
         /// <summary>
@@ -1115,7 +1115,7 @@ namespace RecipeAboutLife.Dialogue
             currentDialogueSet = null;
             currentNPCSprite = null;
 
-            Debug.Log("[StageStoryController] 스테이지 초기화");
+            DebugLogger.Log("[StageStoryController] 스테이지 초기화");
         }
 
         // ==========================================

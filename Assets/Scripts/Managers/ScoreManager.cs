@@ -130,18 +130,18 @@ namespace RecipeAboutLife.Managers
             if (SimpleCookingManager.Instance != null)
             {
                 SimpleCookingManager.Instance.OnHotdogServed += OnHotdogServedHandler;
-                Debug.Log("[ScoreManager] SimpleCookingManager.OnHotdogServed 구독 완료");
+                DebugLogger.Log("[ScoreManager] SimpleCookingManager.OnHotdogServed 구독 완료");
             }
             else
             {
-                Debug.LogWarning("[ScoreManager] SimpleCookingManager.Instance를 찾을 수 없습니다!");
+                DebugLogger.LogWarning("[ScoreManager] SimpleCookingManager.Instance를 찾을 수 없습니다!");
             }
 
             // GameManager의 dayGoals와 목표 금액 동기화
             if (GameManager.Instance != null)
             {
                 targetTotalReward = GameManager.Instance.GetCurrentDayGoal();
-                Debug.Log($"[ScoreManager] 목표 금액을 GameManager에서 동기화: {targetTotalReward}");
+                DebugLogger.Log($"[ScoreManager] 목표 금액을 GameManager에서 동기화: {targetTotalReward}");
             }
         }
 
@@ -160,6 +160,13 @@ namespace RecipeAboutLife.Managers
             {
                 SimpleCookingManager.Instance.OnHotdogServed -= OnHotdogServedHandler;
             }
+        }
+
+        private void OnDestroy()
+        {
+            // 씬 전환 시 static 참조 명시적 정리
+            if (_instance == this)
+                _instance = null;
         }
 
         // ==========================================
@@ -185,7 +192,7 @@ namespace RecipeAboutLife.Managers
                 });
             }
 
-            Debug.Log($"[ScoreManager] Initialized {maxNPCCount} NPC reward slots");
+            DebugLogger.Log($"[ScoreManager] Initialized {maxNPCCount} NPC reward slots");
         }
 
         // ==========================================
@@ -206,7 +213,7 @@ namespace RecipeAboutLife.Managers
             activeOrder = order;
             isOrderServed = false;
 
-            Debug.Log($"[ScoreManager] Active order set: {order.OrderName}\n{order.GetOrderDescription()}");
+            DebugLogger.Log($"[ScoreManager] Active order set: {order.OrderName}\n{order.GetOrderDescription()}");
         }
 
         /// <summary>
@@ -216,7 +223,7 @@ namespace RecipeAboutLife.Managers
         {
             activeOrder = null;
             isOrderServed = false;
-            Debug.Log("[ScoreManager] Order cleared");
+            DebugLogger.Log("[ScoreManager] Order cleared");
         }
 
         /// <summary>
@@ -229,7 +236,7 @@ namespace RecipeAboutLife.Managers
             // 중복 서빙 방지
             if (isOrderServed)
             {
-                Debug.LogWarning("[ScoreManager] Order already served! Ignoring duplicate.");
+                DebugLogger.LogWarning("[ScoreManager] Order already served! Ignoring duplicate.");
                 return;
             }
 
@@ -247,7 +254,7 @@ namespace RecipeAboutLife.Managers
                 return;
             }
 
-            Debug.Log($"[ScoreManager] Hotdog served:\n" +
+            DebugLogger.Log($"[ScoreManager] Hotdog served:\n" +
                      $"  Filling: {hotdog.filling1} + {hotdog.filling2}\n" +
                      $"  Batter: {hotdog.batterStage}\n" +
                      $"  Frying: {hotdog.fryingState} ({hotdog.fryingTime:F1}s)\n" +
@@ -268,7 +275,7 @@ namespace RecipeAboutLife.Managers
             // → OnRecipeCompleted()가 호출되어 보상 처리 진행
             GameEvents.TriggerRecipeCompleted(recipe);
 
-            Debug.Log($"[ScoreManager] Recipe created and event triggered!\n" +
+            DebugLogger.Log($"[ScoreManager] Recipe created and event triggered!\n" +
                      $"  Quality: {recipe.quality:F1}/100\n" +
                      $"  Matches Order: {recipe.matchesOrder}\n" +
                      $"  ScoreCalculator 점수: {earnedMoney}원");
@@ -310,7 +317,7 @@ namespace RecipeAboutLife.Managers
                 recipe.matchesOrder = result.isMatch;
                 recipe.fillingType = DetermineFillingTypeFromOrder(activeOrder);
 
-                Debug.Log($"[ScoreManager] Order validation:\n" +
+                DebugLogger.Log($"[ScoreManager] Order validation:\n" +
                          $"  Ingredient: {result.ingredientMatch}\n" +
                          $"  Topping: {result.toppingMatch}\n" +
                          $"  Sauce: {result.sauceMatch}\n" +
@@ -324,7 +331,7 @@ namespace RecipeAboutLife.Managers
                 recipe.matchesOrder = false;
                 recipe.fillingType = DetermineFillingTypeFromStrings(hotdog.filling1, hotdog.filling2);
 
-                Debug.LogWarning("[ScoreManager] No active order! Default quality applied.");
+                DebugLogger.LogWarning("[ScoreManager] No active order! Default quality applied.");
             }
 
             return recipe;
@@ -388,7 +395,7 @@ namespace RecipeAboutLife.Managers
         {
             if (currentNPCIndex >= maxNPCCount)
             {
-                Debug.LogWarning("[ScoreManager] 이미 모든 NPC에게 음식을 제공했습니다!");
+                DebugLogger.LogWarning("[ScoreManager] 이미 모든 NPC에게 음식을 제공했습니다!");
                 return;
             }
 
@@ -406,7 +413,7 @@ namespace RecipeAboutLife.Managers
             // 총 재화 증가
             totalReward += reward;
 
-            Debug.Log($"[ScoreManager] NPC {currentNPCIndex + 1} 보상 지급: {reward}원 (품질: {recipe.quality:F1}, 총합: {totalReward}원)");
+            DebugLogger.Log($"[ScoreManager] NPC {currentNPCIndex + 1} 보상 지급: {reward}원 (품질: {recipe.quality:F1}, 총합: {totalReward}원)");
 
             // 이벤트 발생
             OnNPCRewarded?.Invoke(currentNPCIndex + 1, reward);
@@ -435,14 +442,14 @@ namespace RecipeAboutLife.Managers
             NPC.NPCSpawnManager spawnManager = FindFirstObjectByType<NPC.NPCSpawnManager>();
             if (spawnManager == null)
             {
-                Debug.LogWarning("[ScoreManager] NPCSpawnManager를 찾을 수 없습니다!");
+                DebugLogger.LogWarning("[ScoreManager] NPCSpawnManager를 찾을 수 없습니다!");
                 return;
             }
 
             GameObject currentNPC = spawnManager.GetCurrentNPC();
             if (currentNPC == null)
             {
-                Debug.LogWarning("[ScoreManager] 현재 NPC가 없습니다!");
+                DebugLogger.LogWarning("[ScoreManager] 현재 NPC가 없습니다!");
                 return;
             }
 
@@ -450,7 +457,7 @@ namespace RecipeAboutLife.Managers
             NPC.NPCOrderController orderController = currentNPC.GetComponent<NPC.NPCOrderController>();
             if (orderController == null)
             {
-                Debug.LogWarning("[ScoreManager] NPCOrderController를 찾을 수 없습니다!");
+                DebugLogger.LogWarning("[ScoreManager] NPCOrderController를 찾을 수 없습니다!");
                 return;
             }
 
@@ -467,7 +474,7 @@ namespace RecipeAboutLife.Managers
         /// </summary>
         private void OnAllNPCsServed()
         {
-            Debug.Log($"[ScoreManager] 모든 NPC 완료! 총 재화: {totalReward}원 / 목표: {targetTotalReward}원");
+            DebugLogger.Log($"[ScoreManager] 모든 NPC 완료! 총 재화: {totalReward}원 / 목표: {targetTotalReward}원");
 
             // 목표 달성 확인
             bool success = totalReward >= targetTotalReward;
@@ -478,7 +485,7 @@ namespace RecipeAboutLife.Managers
             }
             else
             {
-                Debug.Log($"[ScoreManager] 목표 미달성! 부족한 재화: {targetTotalReward - totalReward}원");
+                DebugLogger.Log($"[ScoreManager] 목표 미달성! 부족한 재화: {targetTotalReward - totalReward}원");
             }
 
             // 스테이지 완료 이벤트
@@ -495,13 +502,13 @@ namespace RecipeAboutLife.Managers
         {
             if (isDialogueUnlocked)
             {
-                Debug.LogWarning("[ScoreManager] 이미 대화가 잠금 해제되었습니다!");
+                DebugLogger.LogWarning("[ScoreManager] 이미 대화가 잠금 해제되었습니다!");
                 return;
             }
 
             isDialogueUnlocked = true;
 
-            Debug.Log("[ScoreManager] 대화 잠금 해제! 플레이어와 대화할 수 있습니다.");
+            DebugLogger.Log("[ScoreManager] 대화 잠금 해제! 플레이어와 대화할 수 있습니다.");
 
             // 이벤트 발생
             OnDialogueUnlocked?.Invoke();
@@ -530,7 +537,7 @@ namespace RecipeAboutLife.Managers
 
             OnTotalRewardChanged?.Invoke(totalReward);
 
-            Debug.Log("[ScoreManager] 스테이지 재시작");
+            DebugLogger.Log("[ScoreManager] 스테이지 재시작");
         }
 
         /// <summary>
@@ -585,7 +592,7 @@ namespace RecipeAboutLife.Managers
         {
             if (currentNPCIndex >= maxNPCCount)
             {
-                Debug.Log("[TestButton] 모든 NPC 완료!");
+                DebugLogger.Log("[TestButton] 모든 NPC 완료!");
                 return;
             }
 
@@ -615,7 +622,7 @@ namespace RecipeAboutLife.Managers
             // 총 재화 증가
             totalReward += reward;
 
-            Debug.Log($"[TestButton] NPC {currentNPCIndex + 1} 완벽 서빙! 보상: {reward}원 (총: {totalReward}원)");
+            DebugLogger.Log($"[TestButton] NPC {currentNPCIndex + 1} 완벽 서빙! 보상: {reward}원 (총: {totalReward}원)");
 
             // 이벤트 발생
             OnNPCRewarded?.Invoke(currentNPCIndex + 1, reward);
@@ -642,7 +649,7 @@ namespace RecipeAboutLife.Managers
         {
             if (currentNPCIndex >= maxNPCCount)
             {
-                Debug.Log("[TestButton] 모든 NPC 완료!");
+                DebugLogger.Log("[TestButton] 모든 NPC 완료!");
                 return;
             }
 
@@ -692,7 +699,7 @@ namespace RecipeAboutLife.Managers
             // 총 재화 증가
             totalReward += reward;
 
-            Debug.Log($"[TestButton] NPC {currentNPCIndex + 1} 완벽 서빙! 주문: {currentOrder.GetOrderDescription()}, 보상: {reward}원 (총: {totalReward}원)");
+            DebugLogger.Log($"[TestButton] NPC {currentNPCIndex + 1} 완벽 서빙! 주문: {currentOrder.GetOrderDescription()}, 보상: {reward}원 (총: {totalReward}원)");
 
             // 이벤트 발생
             OnNPCRewarded?.Invoke(currentNPCIndex + 1, reward);
@@ -702,7 +709,7 @@ namespace RecipeAboutLife.Managers
             if (orderController != null)
             {
                 orderController.OnFoodServed(true); // 테스트는 항상 성공
-                Debug.Log("[TestButton] NPC 서빙 완료 알림 (ServedSuccess 대화)");
+                DebugLogger.Log("[TestButton] NPC 서빙 완료 알림 (ServedSuccess 대화)");
             }
 
             // NPC 퇴장 처리 (currentNPCIndex 증가 전에 실행)
@@ -712,11 +719,11 @@ namespace RecipeAboutLife.Managers
                 if (movement != null)
                 {
                     movement.OnOrderComplete(); // NPC 퇴장 시작 (퇴장 완료 시 자동으로 다음 NPC 스폰됨)
-                    Debug.Log("[TestButton] NPC 퇴장 명령 전송");
+                    DebugLogger.Log("[TestButton] NPC 퇴장 명령 전송");
                 }
                 else
                 {
-                    Debug.LogWarning("[TestButton] NPCMovement를 찾을 수 없습니다!");
+                    DebugLogger.LogWarning("[TestButton] NPCMovement를 찾을 수 없습니다!");
                 }
             }
 

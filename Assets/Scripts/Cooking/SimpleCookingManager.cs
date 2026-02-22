@@ -122,7 +122,7 @@ namespace RecipeAboutLife.Cooking
             OnCookingStarted?.Invoke();
             
             ChangePhase(CookingPhase.StickPickup);
-            Debug.Log("[SimpleCookingManager] === 요리 시작! ===");
+            DebugLogger.Log("[SimpleCookingManager] === 요리 시작! ===");
         }
 
         /// <summary>
@@ -130,14 +130,14 @@ namespace RecipeAboutLife.Cooking
         /// </summary>
         private void CleanupPreviousCooking()
         {
-            Debug.Log("[SimpleCookingManager] 이전 요리 정리 시작...");
+            DebugLogger.Log("[SimpleCookingManager] 이전 요리 정리 시작...");
 
             // 1. 현재 핫도그 오브젝트 삭제
             if (currentHotdog != null)
             {
                 Destroy(currentHotdog);
                 currentHotdog = null;
-                Debug.Log("[SimpleCookingManager] 이전 핫도그 오브젝트 삭제");
+                DebugLogger.Log("[SimpleCookingManager] 이전 핫도그 오브젝트 삭제");
             }
 
             // 2. "Hotdog" 태그가 붙은 모든 오브젝트 삭제 (태그가 없으면 스킵)
@@ -147,13 +147,13 @@ namespace RecipeAboutLife.Cooking
                 foreach (var hotdog in hotdogs)
                 {
                     Destroy(hotdog);
-                    Debug.Log($"[SimpleCookingManager] 태그로 찾은 핫도그 삭제: {hotdog.name}");
+                    DebugLogger.Log($"[SimpleCookingManager] 태그로 찾은 핫도그 삭제: {hotdog.name}");
                 }
             }
             catch (UnityException)
             {
                 // "Hotdog" 태그가 정의되지 않은 경우 무시
-                Debug.Log("[SimpleCookingManager] 'Hotdog' 태그가 없음 - 스킵");
+                DebugLogger.Log("[SimpleCookingManager] 'Hotdog' 태그가 없음 - 스킵");
             }
 
             // 3. 이름에 "Stick" 또는 "Hotdog"이 포함된 동적 생성 오브젝트 찾아서 삭제
@@ -165,7 +165,7 @@ namespace RecipeAboutLife.Cooking
                     (obj.name.Contains("Stick") || obj.name.Contains("Hotdog")))
                 {
                     Destroy(obj);
-                    Debug.Log($"[SimpleCookingManager] 클론 오브젝트 삭제: {obj.name}");
+                    DebugLogger.Log($"[SimpleCookingManager] 클론 오브젝트 삭제: {obj.name}");
                 }
             }
 
@@ -173,12 +173,12 @@ namespace RecipeAboutLife.Cooking
             if (ingredientPopup != null && ingredientPopup.activeSelf)
             {
                 ingredientPopup.SetActive(false);
-                Debug.Log("[SimpleCookingManager] 재료 팝업 닫음");
+                DebugLogger.Log("[SimpleCookingManager] 재료 팝업 닫음");
             }
             if (toppingPopup != null && toppingPopup.activeSelf)
             {
                 toppingPopup.SetActive(false);
-                Debug.Log("[SimpleCookingManager] 토핑 팝업 닫음");
+                DebugLogger.Log("[SimpleCookingManager] 토핑 팝업 닫음");
             }
 
             // 5. IngredientPopup 하위의 Clone 오브젝트 삭제 (이전 손님 재료)
@@ -191,12 +191,12 @@ namespace RecipeAboutLife.Cooking
                     if (child.name.Contains("(Clone)"))
                     {
                         Destroy(child.gameObject);
-                        Debug.Log($"[SimpleCookingManager] IngredientPopup 내 클론 삭제: {child.name}");
+                        DebugLogger.Log($"[SimpleCookingManager] IngredientPopup 내 클론 삭제: {child.name}");
                     }
                 }
             }
 
-            Debug.Log("[SimpleCookingManager] 이전 요리 정리 완료");
+            DebugLogger.Log("[SimpleCookingManager] 이전 요리 정리 완료");
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace RecipeAboutLife.Cooking
         {
             currentPhase = newPhase;
             OnPhaseChanged?.Invoke(newPhase);
-            Debug.Log($"[SimpleCookingManager] Phase changed to: {newPhase}");
+            DebugLogger.Log($"[SimpleCookingManager] Phase changed to: {newPhase}");
         }
 
         /// <summary>
@@ -247,11 +247,11 @@ namespace RecipeAboutLife.Cooking
         /// </summary>
         private void CompleteCooking()
         {
-            Debug.Log($"[SimpleCookingManager] === 요리 완료! ===");
-            Debug.Log($"  재료1: {hotdogData.filling1}");
-            Debug.Log($"  재료2: {hotdogData.filling2}");
-            Debug.Log($"  반죽: {hotdogData.batterStage}단계");
-            Debug.Log($"  튀김: {hotdogData.fryingState}");
+            DebugLogger.Log($"[SimpleCookingManager] === 요리 완료! ===");
+            DebugLogger.Log($"  재료1: {hotdogData.filling1}");
+            DebugLogger.Log($"  재료2: {hotdogData.filling2}");
+            DebugLogger.Log($"  반죽: {hotdogData.batterStage}단계");
+            DebugLogger.Log($"  튀김: {hotdogData.fryingState}");
 
             currentPhase = CookingPhase.None;
         }
@@ -264,7 +264,7 @@ namespace RecipeAboutLife.Cooking
             if (ingredientPopup != null)
             {
                 ingredientPopup.SetActive(true);
-                Debug.Log("[SimpleCookingManager] 재료 팝업 열림");
+                DebugLogger.Log("[SimpleCookingManager] 재료 팝업 열림");
             }
         }
 
@@ -276,7 +276,7 @@ namespace RecipeAboutLife.Cooking
             if (ingredientPopup != null)
             {
                 ingredientPopup.SetActive(false);
-                Debug.Log("[SimpleCookingManager] 재료 팝업 닫힘");
+                DebugLogger.Log("[SimpleCookingManager] 재료 팝업 닫힘");
             }
         }
 
@@ -288,7 +288,7 @@ namespace RecipeAboutLife.Cooking
             if (toppingPopup != null)
             {
                 toppingPopup.SetActive(true);
-                Debug.Log("[SimpleCookingManager] 토핑 팝업 열림");
+                DebugLogger.Log("[SimpleCookingManager] 토핑 팝업 열림");
             }
         }
 
@@ -300,7 +300,7 @@ namespace RecipeAboutLife.Cooking
             if (toppingPopup != null)
             {
                 toppingPopup.SetActive(false);
-                Debug.Log("[SimpleCookingManager] 토핑 팝업 닫힘");
+                DebugLogger.Log("[SimpleCookingManager] 토핑 팝업 닫힘");
             }
         }
 
@@ -311,24 +311,24 @@ namespace RecipeAboutLife.Cooking
         {
             if (currentHotdog == null)
             {
-                Debug.LogWarning("[SimpleCookingManager] 제공할 핫도그가 없습니다!");
+                DebugLogger.LogWarning("[SimpleCookingManager] 제공할 핫도그가 없습니다!");
                 return;
             }
 
             // 완성 정보 로그
-            Debug.Log("[SimpleCookingManager] ========== 요리 제공 완료! ==========");
-            Debug.Log($"  재료1: {hotdogData.filling1}");
-            Debug.Log($"  재료2: {hotdogData.filling2}");
-            Debug.Log($"  반죽 단계: {hotdogData.batterStage}");
-            Debug.Log($"  튀김 상태: {hotdogData.fryingState}");
-            Debug.Log($"  설탕: {(hotdogData.hasSugar ? "O" : "X")}");
-            Debug.Log($"  케첩: {(hotdogData.hasKetchup ? "O" : "X")}");
-            Debug.Log($"  머스타드: {(hotdogData.hasMustard ? "O" : "X")}");
-            Debug.Log("[SimpleCookingManager] =====================================");
+            DebugLogger.Log("[SimpleCookingManager] ========== 요리 제공 완료! ==========");
+            DebugLogger.Log($"  재료1: {hotdogData.filling1}");
+            DebugLogger.Log($"  재료2: {hotdogData.filling2}");
+            DebugLogger.Log($"  반죽 단계: {hotdogData.batterStage}");
+            DebugLogger.Log($"  튀김 상태: {hotdogData.fryingState}");
+            DebugLogger.Log($"  설탕: {(hotdogData.hasSugar ? "O" : "X")}");
+            DebugLogger.Log($"  케첩: {(hotdogData.hasKetchup ? "O" : "X")}");
+            DebugLogger.Log($"  머스타드: {(hotdogData.hasMustard ? "O" : "X")}");
+            DebugLogger.Log("[SimpleCookingManager] =====================================");
 
             // 점수 계산
             int earnedMoney = CalculateScore();
-            Debug.Log($"[SimpleCookingManager] 획득 금액: {earnedMoney}원");
+            DebugLogger.Log($"[SimpleCookingManager] 획득 금액: {earnedMoney}원");
 
             // GameManager에 서빙 완료 알림
             if (GameManager.Instance != null)
@@ -338,7 +338,7 @@ namespace RecipeAboutLife.Cooking
             }
             else
             {
-                Debug.LogWarning("[SimpleCookingManager] GameManager가 없습니다!");
+                DebugLogger.LogWarning("[SimpleCookingManager] GameManager가 없습니다!");
             }
 
             // 사운드 재생
@@ -354,7 +354,7 @@ namespace RecipeAboutLife.Cooking
             // 요리 제공 완료 이벤트 발생 (획득 금액 전달)
             OnHotdogServed?.Invoke(earnedMoney);
 
-            Debug.Log("[SimpleCookingManager] 새 요리를 시작하려면 StartCooking()을 호출하세요.");
+            DebugLogger.Log("[SimpleCookingManager] 새 요리를 시작하려면 StartCooking()을 호출하세요.");
         }
 
         /// <summary>
@@ -368,9 +368,9 @@ namespace RecipeAboutLife.Cooking
             if (currentOrder != null)
             {
                 // 주문 vs 완성품 비교 로그
-                Debug.Log($"[SimpleCookingManager] === 주문 비교 점수 계산 ===");
-                Debug.Log($"  [주문] 재료: {currentOrder.filling1}, {currentOrder.filling2} / 설탕{(currentOrder.wantsSugar ? "O" : "X")}, 케첩{(currentOrder.wantsKetchup ? "O" : "X")}, 머스타드{(currentOrder.wantsMustard ? "O" : "X")}");
-                Debug.Log($"  [완성] 재료: {hotdogData.filling1}, {hotdogData.filling2} / 설탕{(hotdogData.hasSugar ? "O" : "X")}, 케첩{(hotdogData.hasKetchup ? "O" : "X")}, 머스타드{(hotdogData.hasMustard ? "O" : "X")}");
+                DebugLogger.Log($"[SimpleCookingManager] === 주문 비교 점수 계산 ===");
+                DebugLogger.Log($"  [주문] 재료: {currentOrder.filling1}, {currentOrder.filling2} / 설탕{(currentOrder.wantsSugar ? "O" : "X")}, 케첩{(currentOrder.wantsKetchup ? "O" : "X")}, 머스타드{(currentOrder.wantsMustard ? "O" : "X")}");
+                DebugLogger.Log($"  [완성] 재료: {hotdogData.filling1}, {hotdogData.filling2} / 설탕{(hotdogData.hasSugar ? "O" : "X")}, 케첩{(hotdogData.hasKetchup ? "O" : "X")}, 머스타드{(hotdogData.hasMustard ? "O" : "X")}");
 
                 // 주문이 있으면 주문과 비교하여 점수 계산
                 return ScoreCalculator.Calculate(currentOrder, hotdogData);
@@ -378,7 +378,7 @@ namespace RecipeAboutLife.Cooking
             else
             {
                 // 주문이 없으면 기본 점수 계산 (테스트용)
-                Debug.LogWarning("[SimpleCookingManager] 주문 데이터 없음 - 기본 점수 계산 (주문 비교 불가)");
+                DebugLogger.LogWarning("[SimpleCookingManager] 주문 데이터 없음 - 기본 점수 계산 (주문 비교 불가)");
                 return ScoreCalculator.CalculateWithoutOrder(hotdogData);
             }
         }
@@ -390,7 +390,7 @@ namespace RecipeAboutLife.Cooking
         {
             // AudioManager를 통해 서빙 사운드 재생
             AudioManager.Instance?.PlayServing();
-            Debug.Log("[SimpleCookingManager] 제공 사운드 재생 (AudioManager)");
+            DebugLogger.Log("[SimpleCookingManager] 제공 사운드 재생 (AudioManager)");
         }
 
 #if UNITY_EDITOR
