@@ -1,6 +1,6 @@
 # Recipe About Life v2 — 데모 버전 프로젝트 요약
 
-> 작성일: 2026-02-23 | 브랜치: develop | 커밋: 1eaff32
+> 작성일: 2026-02-23 | 브랜치: develop | 최신 커밋: 1132090
 
 ---
 
@@ -135,6 +135,65 @@ MainMenu → Lobby(스테이지 선택) → GamePlay(5명 서빙) → 결산 →
 - **미사용 이벤트 시스템**: `EventSystem.cs`의 EventManager 클래스 (사용처 0개)
 - **백업 씬**: `GamePlayScene 2_Backup.unity` (Git 관리로 불필요)
 - **일회성 문서**: `COPY_UI_PANELS_NOW.md`, `UI_Panel_Import_Guide.md` 등
+
+---
+
+## 개발 변경 이력 (2월 15일 이후)
+
+> 이전 작업(2025-12-31 `d676022`) 이후, 데모 버전 개발 기간(2026-02-17 ~ 02-23)의 6개 커밋 변경 내역
+
+### 2026-02-17: 개발 환경 설정 및 핵심 시스템 구축
+
+**커밋 `e1b4b82` — claude 설치 및 설정** (2개 파일)
+- `CLAUDE.md` 프로젝트 가이드라인 작성
+- `.slnx` 솔루션 파일 추가
+
+**커밋 `7852b7d` — fix: 게임 흐름/보상 중복/이벤트 충돌 문제 해결 및 안정성 개선** (6개 파일, +134 -59)
+- `GameManager.cs`: 재화 누적 버그 수정 (Day 시작 시 초기화)
+- `ScoreManager.cs`: 보상 중복 지급 방지
+- `SimpleCookingManager.cs`: 이벤트 충돌 해결
+- `NPCSpawnManager.cs`: NPC 스폰 흐름 안정화
+- `GameUIManager.cs`: UI 상태 동기화 개선
+- `OrderManager.cs`: 주문 시스템 안정성 보완
+
+**커밋 `e422025` — feat: 게임 루프 완성 및 점수-재화 시스템 연동 + StageData 기반 환경 시스템 구현** (15개 파일, +874 -103)
+- `ScoreManager.cs`: 점수 계산 및 재화 연동 로직 구현
+- `GameManager.cs`: Day/Money 상태 관리 확장
+- `StageDataManager.cs`, `StageEnvironmentData.cs`: 스테이지별 환경 데이터 시스템 신규 구현
+- `ResultUIController.cs`: 결산 화면 구현
+- `NPCOrderController.cs`: 주문-서빙 흐름 연동
+- 총 15개 파일, +874줄 대규모 기능 추가
+
+### 2026-02-22: 로비 연동 및 디버그 도구
+
+**커밋 `6e62fa0` — feat: 스테이지 핀 활성화 수정 + 디버그 스킵 버튼 + 점수/보상 시스템 안정화** (19개 파일, +513 -66)
+- `LobbyManager.cs`, `StagePinController.cs`: 스테이지 핀 ↔ Day 연동
+- `DebugSkipButton.cs`, `DebugTestButton.cs`: 디버그용 스킵/테스트 버튼 추가
+- `ScoreManager.cs`: 점수 계산 안정화
+- `SimpleCookingManager.cs`: 요리 단계 흐름 보완
+- `GamePlayScene.unity`: 디버그 UI 배치
+
+### 2026-02-23: 데모 버전 완성 및 코드 정리
+
+**커밋 `1eaff32` — feat: 데모 버전 완성** (27개 파일, +4,974 -192)
+- `SettingsPopupController.cs`: 설정 팝업 시스템 신규 구현 (BGM/SFX 볼륨 조절)
+- `FramePanelUI.cs`: 스토리 화면 2-layer 배경 시스템 신규 구현
+- `AudioManager.cs`: 버튼 클릭음 볼륨 40% 조정, SoundSettings 확장
+- `StageStoryController.cs`: Day2/Day3 스토리 배경 통합, Day3 클리어 텍스트 수정
+- `ResultUIController.cs`: 결산 화면 Day 이미지/배경 수정
+- `GameManager.cs`: 설정 팝업 연동
+- `LobbyManager.cs`: 스테이지 핀 Day 연동
+- 스토리 배경 이미지 4장 + UI 리소스 추가
+- `GamePlayScene.unity`, `MainMenuScene.unity`: 설정 팝업 UI 배치
+- 데모 최대 규모 커밋
+
+**커밋 `1132090` — refactor: 코드 정리 및 안정성 개선** (7개 파일, +337 -154)
+- `DebugLogger.cs`: 릴리스 빌드 Debug.Log 자동 제거 유틸리티 신규 구현
+- `StageStoryController.cs`: Debug.Log → DebugLogger 교체 (~85건), Day3 클리어 시 MainMenuScene 전환
+- `ScoreManager.cs`: Debug.Log → DebugLogger 교체 (~27건), OnDestroy _instance 정리
+- `SimpleCookingManager.cs`: Debug.Log → DebugLogger 교체 (~38건)
+- `GamePlayScene.unity`: FadeImage 확장 (검정화면 테두리 수정), SettingsPopup 초기 비활성화
+- `DEMO_PROJECT_SUMMARY.md`: 프로젝트 요약 문서 작성
 
 ---
 
