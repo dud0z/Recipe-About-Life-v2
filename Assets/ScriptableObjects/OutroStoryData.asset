@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09f1f81537bd15a4491eecd67f31807c, type: 3}
+  m_Name: OutroStoryData
+  m_EditorClassIdentifier: 
+  pages:
+  - backgroundImage: {fileID: 689283645380311244, guid: 166722090b223af409069e44e4817042, type: 3}
+    lines:
+    - speaker: 1
+      text: "\uC601\uC6D0\uD788 \uB05D\uB098\uC9C0 \uC54A\uC744 \uAC83 \uAC19\uB358
+        \uC7BF\uBE5B \uD558\uB8E8\uD558\uB8E8..."
+      displayDuration: 0
+    - speaker: 1
+      text: "\uD558\uC9C0\uB9CC \uC774 \uC791\uC740 \uD2B8\uB7ED \uCC3D\uBB38 \uB108\uBA38\uB85C
+        \uC0AC\uB78C\uB4E4\uACFC \uC628\uAE30\uB97C \uB098\uB204\uB2E4 \uBCF4\uB2C8,
+        \uAF41\uAF41 \uC5BC\uC5B4\uBD99\uC5C8\uB358 \uB0B4 \uC138\uC0C1\uC5D0\uB3C4
+        \uC870\uAE08\uC529 \uC0C9\uC774 \uBC88\uC9C0\uAE30 \uC2DC\uC791\uD588\uB2E4."
+      displayDuration: 0
+    - speaker: 1
+      text: "...\uB124\uAC00 \uB0A8\uAE34 \uC774 \uD3B8\uC9C0\uB97C \uB530\uB77C\uB098\uC120
+        \uCCAB \uBC88\uC9F8 \uBC1C\uAC78\uC74C\uC774, \uC774\uB807\uAC8C \uBB34\uC0AC\uD788
+        \uB05D\uB0AC\uC5B4."
+      displayDuration: 0
+    - speaker: 1
+      text: "\uB124 \uB9D0\uB300\uB85C\uC600\uC5B4. \uB0B4\uAC00 \uB3C4\uB9DD\uCE58\uB824
+        \uD588\uB358 \uC774 \uC138\uC0C1\uC740, \uC0DD\uAC01\uBCF4\uB2E4 \uD6E8\uC52C
+        \uB530\uB73B\uD55C \uACF3\uC774\uB354\uB77C."
+      displayDuration: 0
+    - speaker: 1
+      text: "\uC0C1\uCC98\uAC00 \uC644\uC804\uD788 \uC544\uBB3C\uB824\uBA74 \uC544\uC9C1
+        \uAE34 \uC2DC\uAC04\uC774 \uD544\uC694\uD558\uACA0\uC9C0."
+      displayDuration: 0
+    - speaker: 1
+      text: "\uD558\uC9C0\uB9CC... \uC774\uC81C\uB294 \uB450\uB835\uC9C0 \uC54A\uC544."
+      displayDuration: 0
+    - speaker: 1
+      text: "\uB0B4\uC77C \uC774 \uCC3D\uBB38 \uB108\uBA38\uB85C \uBD88\uC5B4\uC62C
+        \uBC14\uB78C\uC740 \uB610 \uC5B4\uB5A4 \uB0C4\uC0C8\uB97C \uD488\uACE0 \uC788\uC744\uAE4C?"
+      displayDuration: 0
+    - speaker: 1
+      text: "\uC6B0\uB9AC\uC758 \uC0C8\uB85C\uC6B4 \uC5EC\uC815\uC774, \uC9C0\uAE08
+        \uB2E4\uC2DC \uC2DC\uC791\uB41C\uB2E4."
+      displayDuration: 0

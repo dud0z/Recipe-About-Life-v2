@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RecipeAboutLife.Managers;
 using RecipeAboutLife.NPC;
+using RecipeAboutLife.UI;
 
 namespace RecipeAboutLife.Dialogue
 {
@@ -38,6 +39,11 @@ namespace RecipeAboutLife.Dialogue
         // ==========================================
         // Configuration
         // ==========================================
+
+        [Header("아웃트로 스토리")]
+        [SerializeField]
+        [Tooltip("아웃트로 스토리 컨트롤러 (Day3 클리어 후 마무리 스토리)")]
+        private IntroStoryController outroStoryController;
 
         [Header("스토리 NPC 설정")]
         [SerializeField]
@@ -81,6 +87,14 @@ namespace RecipeAboutLife.Dialogue
 
         // 게임 클리어 상태 (Day3 완료 시 true)
         private bool isGameCleared = false;
+
+        /// <summary>
+        /// 스토리 대화가 진행 중인지 여부 (디버그 스킵용)
+        /// </summary>
+        public bool IsStoryPlaying => isStoryDialogueTriggered;
+
+        // 다음 Day로 진행해야 하는지 여부 (스토리 대화 완료 후 로비 전환 시 실행)
+        private bool shouldAdvanceDay = false;
 
         [Header("대화 표시 설정")]
         [SerializeField]
@@ -278,12 +292,14 @@ namespace RecipeAboutLife.Dialogue
             {
                 if (GameManager.Instance.CurrentDay < GameManager.Instance.maxDay)
                 {
-                    GameManager.Instance.StartNextDay();
+                    // Day 변경은 스토리 대화 완료 후 로비 전환 시 실행 (BGM 조기 전환 방지)
+                    shouldAdvanceDay = true;
                     isGameCleared = false;
-                    DebugLogger.Log($"[StageStoryController] 다음 Day로 진행: Day {GameManager.Instance.CurrentDay}");
+                    DebugLogger.Log($"[StageStoryController] 스토리 대화 후 다음 Day로 진행 예정 (현재: Day {GameManager.Instance.CurrentDay})");
                 }
                 else
                 {
+                    shouldAdvanceDay = false;
                     isGameCleared = true;
                     DebugLogger.Log("[StageStoryController] 모든 Day 완료! 게임 클리어!");
                 }
@@ -820,6 +836,13 @@ namespace RecipeAboutLife.Dialogue
                 }
                 DebugLogger.Log("[StageStoryController] 페이드 인 완료");
 
+                // BGM 정지 (게임 클리어 시에는 아웃트로 스토리용으로 BGM 유지)
+                if (!isGameCleared && RecipeAboutLife.Cooking.AudioManager.Instance != null)
+                {
+                    RecipeAboutLife.Cooking.AudioManager.Instance.StopBGM();
+                    DebugLogger.Log("[StageStoryController] BGM 정지 (전환 화면)");
+                }
+
                 // 페이드 완료 후 1초 대기
                 yield return new WaitForSeconds(1f);
                 DebugLogger.Log("[StageStoryController] 페이드 인 후 1초 대기 완료");
@@ -841,7 +864,56 @@ namespace RecipeAboutLife.Dialogue
                     DebugLogger.Log("[StageStoryController] FramePanel 숨김");
                 }
 
-                // 2. Day 정보 또는 "To be continued.." 텍스트 표시
+                // 2. 다음 Day로 진행 (BGM 전환은 여기서 발생 - 검은 화면 상태이므로 자연스러움)
+                if (shouldAdvanceDay && GameManager.Instance != null)
+                {
+                    GameManager.Instance.StartNextDay();
+                    shouldAdvanceDay = false;
+                    DebugLogger.Log($"[StageStoryController] 다음 Day로 진행 완료: Day {GameManager.Instance.CurrentDay}");
+
+                    // StartNextDay → OnDayChanged 이벤트로 자동 재생된 BGM 재정지
+                    if (RecipeAboutLife.Cooking.AudioManager.Instance != null)
+                    {
+                        RecipeAboutLife.Cooking.AudioManager.Instance.StopBGM();
+                    }
+                }
+
+                // ★ 게임 클리어 시 아웃트로 스토리 재생 (To be continued 이전)
+                if (isGameCleared)
+                {
+                    // Inspector 미할당 시 자동 탐색 (비활성 오브젝트 포함)
+                    if (outroStoryController == null)
+                    {
+                        outroStoryController = FindObjectOfType<IntroStoryController>(true);
+                        DebugLogger.Log($"[StageStoryController] outroStoryController 자동 탐색: {(outroStoryController != null ? "성공" : "실패")}");
+                    }
+
+                    if (outroStoryController != null)
+                    {
+                        // FadePanel을 투명하게 → OutroStoryPanel이 보이도록
+                        fadeUI.SetTransparent();
+
+                        DebugLogger.Log("[StageStoryController] 아웃트로 스토리 재생 시작");
+                        bool outroFinished = false;
+                        outroStoryController.PlayIntro(() =>
+                        {
+                            fadeUI.SetBlack(); // 즉시 검은 화면 (FadeIn(0f)은 1초 페이드로 동작하여 깜빡임 발생)
+                            outroFinished = true;
+                        });
+                        while (!outroFinished)
+                            yield return null;
+                        DebugLogger.Log("[StageStoryController] 아웃트로 스토리 재생 완료");
+
+                        // 아웃트로 완료 후 BGM 정지
+                        if (RecipeAboutLife.Cooking.AudioManager.Instance != null)
+                        {
+                            RecipeAboutLife.Cooking.AudioManager.Instance.StopBGM();
+                            DebugLogger.Log("[StageStoryController] BGM 정지 (아웃트로 완료)");
+                        }
+                    }
+                }
+
+                // 3. Day 정보 또는 "To be continued.." 텍스트 표시
                 string transitionText = "로비로";
                 if (GameManager.Instance != null)
                 {
@@ -897,6 +969,33 @@ namespace RecipeAboutLife.Dialogue
         {
             DebugLogger.Log("[StageStoryController] 로비 씬으로 이동!");
             UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
+        }
+
+        /// <summary>
+        /// 스토리 대화 전체 스킵 (디버그용)
+        /// 진행 중인 모든 코루틴을 중단하고 로비/메인메뉴 전환으로 직행
+        /// </summary>
+        public void SkipStoryDialogue()
+        {
+            if (!isStoryDialogueTriggered) return;
+
+            DebugLogger.Log("[StageStoryController] 스토리 스킵!");
+
+            // 1. 진행 중인 모든 코루틴 중단
+            StopAllCoroutines();
+            currentDialogueCoroutine = null;
+
+            // 2. 입력 상태 초기화
+            waitingForInput = false;
+            inputReceived = false;
+
+            // 3. UI 패널 숨기기
+            if (UI.NPCDialogueUI.Instance != null) UI.NPCDialogueUI.Instance.Hide();
+            if (UI.PlayerDialogueUI.Instance != null) UI.PlayerDialogueUI.Instance.Hide();
+            if (UI.FramePanelUI.Instance != null) UI.FramePanelUI.Instance.Hide();
+
+            // 4. 바로 로비/메인메뉴 전환으로 이동
+            StartCoroutine(TransitionToLobbyCoroutine());
         }
 
         /// <summary>
@@ -1103,6 +1202,7 @@ namespace RecipeAboutLife.Dialogue
         {
             isStoryDialogueTriggered = false;
             isPlayingAfterStoryOnly = false;
+            shouldAdvanceDay = false;
 
             // 진행 중인 대화 코루틴 중지
             if (currentDialogueCoroutine != null)

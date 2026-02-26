@@ -35,6 +35,10 @@ namespace RecipeAboutLife.Cooking
         [Tooltip("버튼 클릭 소리")]
         public AudioClip buttonClickSound;
 
+        [Header("=== 보상 SFX ===")]
+        [Tooltip("코인 획득 소리")]
+        public AudioClip coinRewardSound;
+
         [Header("=== BGM ===")]
         [Tooltip("Day 1 배경음악")]
         public AudioClip day1BGM;

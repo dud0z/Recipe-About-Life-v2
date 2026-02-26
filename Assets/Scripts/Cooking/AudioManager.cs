@@ -5,6 +5,7 @@ namespace RecipeAboutLife.Cooking
     /// <summary>
     /// 오디오 관리자
     /// 모든 효과음과 BGM 재생 담당
+    /// 어떤 씬에서든 자동 생성됨 (RuntimeInitializeOnLoadMethod)
     /// </summary>
     public class AudioManager : MonoBehaviour
     {
@@ -24,6 +25,20 @@ namespace RecipeAboutLife.Cooking
         [Tooltip("루프 SFX AudioSource (반죽, 튀김, 소스)")]
         public AudioSource loopSfxSource;
 
+        /// <summary>
+        /// 어떤 씬에서든 AudioManager 자동 생성
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void AutoInit()
+        {
+            if (Instance == null)
+            {
+                var go = new GameObject("[AudioManager]");
+                DontDestroyOnLoad(go);
+                go.AddComponent<AudioManager>();
+            }
+        }
+
         private void Awake()
         {
             // 싱글톤 설정
@@ -37,6 +52,10 @@ namespace RecipeAboutLife.Cooking
                 Destroy(gameObject);
                 return;
             }
+
+            // soundSettings 자동 로드 (Inspector 미할당 시)
+            if (soundSettings == null)
+                soundSettings = Resources.Load<SoundSettings>("SoundSettings");
 
             // AudioSource 자동 생성 (없으면)
             InitializeAudioSources();
@@ -219,6 +238,20 @@ namespace RecipeAboutLife.Cooking
         public void PlayServing()
         {
             PlaySFX(soundSettings?.servingSound, "서빙");
+        }
+
+        /// <summary>
+        /// 코인 획득 소리
+        /// </summary>
+        public void PlayCoinReward()
+        {
+            var clip = soundSettings?.coinRewardSound;
+
+            // Inspector 미할당 시 Resources에서 자동 로드
+            if (clip == null)
+                clip = Resources.Load<AudioClip>("Audio/Coinsound");
+
+            PlaySFX(clip, "코인 획득");
         }
 
         /// <summary>

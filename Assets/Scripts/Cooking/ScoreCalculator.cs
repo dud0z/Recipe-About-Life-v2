@@ -60,6 +60,13 @@ namespace RecipeAboutLife.Cooking
                 return 0;
             }
 
+            // 생 반죽(Raw) 또는 완전히 탄(Burnt) 상태면 전체 0원
+            if (hotdog.fryingState == FryingState.Raw || hotdog.fryingState == FryingState.Burnt)
+            {
+                Debug.Log($"[ScoreCalculator] 튀김 상태 {hotdog.fryingState} → 전체 0원 처리");
+                return 0;
+            }
+
             int score = 0;
             
             // 1. 재료 일치 확인
@@ -91,6 +98,13 @@ namespace RecipeAboutLife.Cooking
         public static int CalculateWithoutOrder(HotdogData hotdog)
         {
             if (hotdog == null) return 0;
+
+            // 생 반죽(Raw) 또는 완전히 탄(Burnt) 상태면 전체 0원
+            if (hotdog.fryingState == FryingState.Raw || hotdog.fryingState == FryingState.Burnt)
+            {
+                Debug.Log($"[ScoreCalculator] 튀김 상태 {hotdog.fryingState} → 전체 0원 처리 (주문 없음)");
+                return 0;
+            }
 
             int score = 0;
 

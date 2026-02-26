@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using RecipeAboutLife.Managers;
+using RecipeAboutLife.Dialogue;
+using RecipeAboutLife.Cooking;
 
 /// <summary>
 /// [디버그] 스테이지 스킵 버튼 - Day 강제 완료
@@ -30,6 +32,23 @@ public class DebugStageSkipButton : MonoBehaviour
         if (GUI.Button(new Rect(10, 200, 250, 60), "Day 스킵 (성공)"))
         {
             ForceCompleteStage(true);
+        }
+
+        // 스토리 진행 중일 때 스킵 버튼 표시
+        if (StageStoryController.Instance != null && StageStoryController.Instance.IsStoryPlaying)
+        {
+            if (GUI.Button(new Rect(10, 270, 250, 60), "스토리 스킵"))
+            {
+                StageStoryController.Instance.SkipStoryDialogue();
+            }
+        }
+
+        // 환경 효과 토글 버튼
+        string envLabel = DayEnvironmentEffect.Instance != null && DayEnvironmentEffect.Instance.isEnabled
+            ? "환경효과 끄기" : "환경효과 켜기";
+        if (GUI.Button(new Rect(10, 340, 250, 60), envLabel))
+        {
+            DayEnvironmentEffect.Instance?.Toggle();
         }
     }
 

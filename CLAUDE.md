@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Guidelines
 
 - 모든 답변과 설명은 반드시 한국어(Korean)로 작성해야 합니다.
+- 모델 사용 원칙: 이 프로젝트의 모든 코드 분석, 구조 설계, 문제 해결 및 답변 생성은 반드시 가장 높은 추론 능력을 가진 'Opus (4.6)' 모델을 사용하여 진행할 것.
 
 ## Project Overview
 

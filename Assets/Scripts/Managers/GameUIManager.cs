@@ -99,6 +99,9 @@ public class GameUIManager : MonoBehaviour
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuitButtonClicked);
 
+        // 일시정지 버튼 라벨 설정
+        SetupPauseButtonLabels();
+
         // 초기 UI 설정
         InitializeUI();
     }
@@ -257,6 +260,8 @@ public class GameUIManager : MonoBehaviour
     {
         Debug.Log("[GameUIManager] 핫도그 제공 - MoneyPanel 표시");
         ShowMoneyPanel();
+        ShowCoinFeedback(earnedMoney);
+        AudioManager.Instance?.PlayCoinReward();
     }
 
     /// <summary>
@@ -571,6 +576,111 @@ public class GameUIManager : MonoBehaviour
         }
 
         Debug.Log("[GameUIManager] 메인 UI 표시 (MoneyPanel, PauseButton, DayImage)");
+    }
+
+    #endregion
+
+    #region Coin Feedback
+
+    /// <summary>
+    /// 코인 획득 피드백 텍스트 표시 (+금액, 초록색, 아래로 내려가며 페이드 아웃)
+    /// </summary>
+    private void ShowCoinFeedback(int amount)
+    {
+        if (moneyPanel == null) return;
+
+        // MoneyPanel의 자식으로 생성 (MoneyPanel localScale 0.16 기준 좌표계)
+        var go = new GameObject("CoinFeedback");
+        go.transform.SetParent(moneyPanel.transform, false);
+
+        var tmp = go.AddComponent<TextMeshProUGUI>();
+        tmp.text = $"+{amount}";
+        tmp.fontSize = 250;  // 0.16 스케일 보정 (250 × 0.16 = 유효 ~40px)
+        tmp.color = new Color(0.2f, 0.9f, 0.2f, 1f);
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.fontStyle = FontStyles.Bold;
+        tmp.raycastTarget = false;
+
+        var font = Resources.Load<TMP_FontAsset>("Fonts/인천교육힘찬 SDF");
+        if (font != null) tmp.font = font;
+
+        // MoneyPanel 하단 바로 아래에 배치 (로컬 좌표)
+        var rt = tmp.rectTransform;
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(1, 0);
+        rt.pivot = new Vector2(0.5f, 1f);
+        rt.anchoredPosition = new Vector2(0, 0f);
+        rt.sizeDelta = new Vector2(0, 300f);
+
+        StartCoroutine(CoinFeedbackCoroutine(go, tmp, rt));
+    }
+
+    /// <summary>
+    /// 코인 피드백 애니메이션 (아래로 이동 + 페이드 아웃 후 자동 삭제)
+    /// </summary>
+    private IEnumerator CoinFeedbackCoroutine(GameObject go, TextMeshProUGUI tmp, RectTransform rt)
+    {
+        float duration = 1.5f;
+        float elapsed = 0f;
+        Vector2 startPos = rt.anchoredPosition;
+        Color startColor = tmp.color;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = elapsed / duration;
+
+            // MoneyPanel 로컬 좌표계에서 아래로 이동 (200 × 0.16 = 유효 ~32px 이동)
+            rt.anchoredPosition = startPos + new Vector2(0, -200f * t);
+            tmp.color = new Color(startColor.r, startColor.g, startColor.b, 1f - t);
+
+            yield return null;
+        }
+
+        Destroy(go);
+    }
+
+    #endregion
+
+    #region Pause Button Labels
+
+    /// <summary>
+    /// 일시정지 팝업 버튼에 텍스트 라벨 설정
+    /// </summary>
+    private void SetupPauseButtonLabels()
+    {
+        SetButtonLabel(resumeButton, "재개");
+        SetButtonLabel(settingsButton, "설정");
+        SetButtonLabel(quitButton, "게임종료");
+    }
+
+    private void SetButtonLabel(Button button, string label)
+    {
+        if (button == null) return;
+
+        var tmp = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (tmp == null) return;
+
+        tmp.text = label;
+        tmp.fontSize = 24;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.white;
+
+        // 한글 폰트 적용 (인트로/아웃트로와 동일한 폰트)
+        var koreanFont = Resources.Load<TMP_FontAsset>("Fonts/인천교육힘찬 SDF");
+        if (koreanFont != null)
+            tmp.font = koreanFont;
+
+        // 아이콘 아래로 위치 조정 (버튼 하단 바깥)
+        var rt = tmp.rectTransform;
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(1, 0);
+        rt.pivot = new Vector2(0.5f, 1f);
+        rt.anchoredPosition = new Vector2(0, -5f);
+        rt.sizeDelta = new Vector2(0, 40f);
+
+        // margin 초기화
+        tmp.margin = Vector4.zero;
     }
 
     #endregion

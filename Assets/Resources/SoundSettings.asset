@@ -20,9 +20,10 @@ MonoBehaviour:
   sugarApplySound: {fileID: 8300000, guid: 1ad93f143cdef9a4d91c7544dba03262, type: 3}
   servingSound: {fileID: 0}
   buttonClickSound: {fileID: 8300000, guid: 405e95f9f8a88dd438214447684f67da, type: 3}
-  day1BGM: {fileID: 8300000, guid: 0d29ecfd21314f942975be0e06052d6b, type: 3}
+  day1BGM: {fileID: 8300000, guid: 23bdf7bbab2f0b543a596deeebd09e4a, type: 3}
   day2BGM: {fileID: 8300000, guid: 589d39e4de7a0194d96b448ab28572b1, type: 3}
   day3BGM: {fileID: 8300000, guid: 0d29ecfd21314f942975be0e06052d6b, type: 3}
+  masterVolume: 1
   sfxVolume: 1
-  bgmVolume: 0.195
+  bgmVolume: 0.1
   loopSfxVolume: 0.435

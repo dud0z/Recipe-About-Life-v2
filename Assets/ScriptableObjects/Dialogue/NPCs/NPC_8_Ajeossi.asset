@@ -84,6 +84,6 @@ MonoBehaviour:
     - speaker: 0
       text: "\uB09C \uAC04\uB2E4. \uC5B8\uC81C\uB4E0 \uC5F0\uB77D\uD574!"
       displayDuration: 0
-    - speaker: 0
+    - speaker: 1
       text: "\uB124 \uAC10\uC0AC\uD574\uC694"
       displayDuration: 0
