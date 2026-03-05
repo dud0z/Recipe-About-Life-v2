@@ -55,3 +55,6 @@ Build/
 # Visual Studio cache
 .vs/
 
+# MCP local config
+.mcp.json
+
